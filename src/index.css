@@ -1,0 +1,38 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syne:wght@600;700;800&display=swap');
+
+:root {
+  --bg-deep: #050508;
+  --bg-dark: #0a0a0f;
+  --text-primary: #f0f0f5;
+  --text-secondary: #94a3b8;
+  --accent-purple: #8b5cf6;
+  --accent-blue: #3b82f6;
+  --accent-glow: rgba(139, 92, 246, 0.5);
+  --font-inter: 'Inter', sans-serif;
+  --font-syne: 'Syne', sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  width: 100%;
+  background-color: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: var(--font-inter);
+  -webkit-font-smoothing: antialiased;
+}
+
+canvas {
+  display: block;
+  touch-action: none;
+}

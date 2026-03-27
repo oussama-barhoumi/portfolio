@@ -1,0 +1,11 @@
+Model Information:
+* title:	Death Weapon
+* source:	https://sketchfab.com/3d-models/death-weapon-8698b63abfae4114b3670790371a673c
+* author:	Long Nguyễn (https://sketchfab.com/LongNguyen89)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Death Weapon" (https://sketchfab.com/3d-models/death-weapon-8698b63abfae4114b3670790371a673c) by Long Nguyễn (https://sketchfab.com/LongNguyen89) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
