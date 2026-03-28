@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, Suspense, useEffect } from 'react'
+import React, { useRef, useMemo, Suspense, useEffect, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import {
   useGLTF,
@@ -14,6 +14,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { EffectComposer, Bloom, Noise, Vignette, ChromaticAberration } from '@react-three/postprocessing'
 import { BlendFunction } from 'postprocessing'
 import HeroOverlay from './HeroOverlay'
+import HeroSection from './herosection'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -41,13 +42,13 @@ const Model = ({ side, progress }) => {
       const endX = side === 'left' ? -19 : 19
       targetX = THREE.MathUtils.lerp(startX, endX, t)
     } else if (r1 <= 0.7) {
-      // 0.3 -> 0.7: The X Crossing
+
       const t = (r1 - 0.3) / 0.4
       const startX = side === 'left' ? -19 : 19
       const endX = side === 'left' ? 19 : -19
       targetX = THREE.MathUtils.lerp(startX, endX, t)
     } else {
-      // 0.7 -> 1.0: Disappear
+
       const t = (r1 - 0.7) / 0.3
       const startX = side === 'left' ? 19 : -19
       const endX = side === 'left' ? 25 : -25
@@ -62,16 +63,14 @@ const Model = ({ side, progress }) => {
     group.current.position.y = targetYOffset
     group.current.position.z = targetZ
 
-    // Rotation & Floating
+
     group.current.rotation.y += delta * 0.4
     group.current.rotation.z = side === 'left' ? r1 * Math.PI : -r1 * Math.PI
 
-    // Dynamic Scale (peak during cross)
+
     const scaleFactor = 1 - Math.abs(r1 - 0.5) * 2
     const currentScale = baseScale * (1 + Math.max(0, scaleFactor) * 0.5)
     group.current.scale.setScalar(currentScale)
-
-    // Apply Opacity
     group.current.traverse((node) => {
       if (node.isMesh) {
         node.material.transparent = true
@@ -145,7 +144,7 @@ const HeroScene = () => {
   }, [])
 
   return (
-    <div ref={containerRef} className="h-[400vh] w-full bg-[#050508]">
+    <div ref={containerRef} className="h-[400vh] w-full relative z-10">
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         <Canvas shadows gl={{ antialias: true, alpha: true, stencil: true }} dpr={[1, 2]}>
           <Suspense fallback={<Html center><div className="text-white text-xs uppercase tracking-widest">Initialising Systems...</div></Html>}>
@@ -153,6 +152,7 @@ const HeroScene = () => {
           </Suspense>
         </Canvas>
         <HeroOverlay progress={progressRef} />
+        <HeroSection progress={progressRef} />
       </div>
     </div>
   )

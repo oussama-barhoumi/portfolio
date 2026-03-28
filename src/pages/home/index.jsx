@@ -3,7 +3,7 @@ import HeroScene from '@/components/HeroScene';
 
 const Home = () => {
     return (
-        <div className="bg-[#050508]">
+        <div className="relative w-full">
             <HeroScene />
         </div>
     );

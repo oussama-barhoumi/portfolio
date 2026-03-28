@@ -1,71 +1,78 @@
 import React, { useRef, useEffect } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-gsap.registerPlugin(ScrollTrigger)
+import * as THREE from 'three'
 
 const HeroOverlay = ({ progress }) => {
-  const containerRef = useRef()
   const titleRef = useRef()
   const subtitleRef = useRef()
 
   useEffect(() => {
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: document.body,
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: true,
+    let rafId
+
+    const tick = () => {
+      const p = progress.current
+      const show = THREE.MathUtils.clamp((p - 0.75) * 10, 0, 1)
+      const hide = THREE.MathUtils.clamp((p - 0.9) * 20, 0, 1) // 0.9 -> 0.95 hides it
+      const finalOpacity = show * (1 - hide)
+
+      if (titleRef.current && subtitleRef.current) {
+        titleRef.current.style.opacity = finalOpacity
+        titleRef.current.style.transform = `translateY(${(1 - show) * 40 - hide * 40}px)`
+        titleRef.current.style.filter = `blur(${(1 - show) * 10 + hide * 10}px)`
+
+        subtitleRef.current.style.opacity = finalOpacity
+        subtitleRef.current.style.transform = `translateY(${(1 - show) * 20 - hide * 20}px)`
+        subtitleRef.current.style.filter = `blur(${(1 - show) * 6 + hide * 6}px)`
       }
-    })
 
-    // Peak text reveal during the crossing phase (0.3 - 0.7)
-    tl.to(titleRef.current, {
-      opacity: 1,
-      y: 0,
-      duration: 0.2, 
-    }, 0.35) 
-    .to(titleRef.current, {
-      opacity: 0,
-      y: 20,
-      duration: 0.2,
-    }, 0.65) 
-    
-    tl.to(subtitleRef.current, {
-      opacity: 1,
-      duration: 0.2,
-    }, 0.4)
-    .to(subtitleRef.current, {
-      opacity: 0,
-      duration: 0.2,
-    }, 0.7)
-
-    return () => {
-      if (tl.scrollTrigger) tl.scrollTrigger.kill()
+      rafId = requestAnimationFrame(tick)
     }
-  }, [])
+
+    rafId = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(rafId)
+  }, [progress])
 
   return (
-    <div ref={containerRef} className="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none">
-      <div className="text-center px-4">
+    <div className="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none">
+      <div className="flex flex-col items-center pt-20 px-4">
         <h1
           ref={titleRef}
-          className="text-white text-6xl md:text-8xl font-syne font-extrabold tracking-tighter uppercase leading-none"
-          style={{ opacity: 0, transform: 'translateY(-20px)' }}
+          className="flex flex-col text-center font-syne font-black uppercase tracking-tighter"
+          style={{
+            opacity: 0,
+            transform: 'translateY(40px)',
+            filter: 'blur(10px)',
+            fontSize: 'clamp(4rem, 12vw, 10rem)',
+            lineHeight: '0.8'
+          }}
         >
-          Oussama <br /> Barhoumi
+          <span className="text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">Oussama</span>
+          <span
+            className="text-transparent mt-2"
+            style={{ WebkitTextStroke: '2px rgba(255, 255, 255, 0.9)' }}
+          >
+            Barhoumi
+          </span>
         </h1>
-        <p
+
+        <div
           ref={subtitleRef}
-          className="text-slate-400 mt-6 text-sm md:text-base font-inter tracking-[0.3em] uppercase opacity-0"
+          className="flex items-center gap-4 mt-12"
+          style={{
+            opacity: 0,
+            transform: 'translateY(20px)',
+            filter: 'blur(6px)',
+          }}
         >
-          The Future of Combat Engineering
-        </p>
+          <div className="w-12 h-[1px] bg-purple-500 opacity-50" />
+
+          <div className="w-12 h-[1px] bg-blue-500 opacity-50" />
+        </div>
       </div>
 
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50">
+
+      <div className="fixed bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50">
         <span className="text-[10px] uppercase tracking-widest text-slate-500">Scroll to Explore</span>
-        <div className="w-[1px] h-12 bg-gradient-to-t from-purple-500 to-transparent" />
+        <div className="w-px h-12 bg-linear-to-t from-purple-500 to-transparent" />
       </div>
     </div>
   )
