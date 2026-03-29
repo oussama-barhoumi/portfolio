@@ -27,7 +27,7 @@ const Model = ({ side, progress }) => {
   const clonedScene = useMemo(() => scene.clone(), [scene])
   const baseScale = 0.06
 
-  useFrame((state, delta) => {
+  useFrame(() => {
     const r1 = progress.current
     let targetX = 0
     let targetXOffset = side === 'left' ? -18 : 18
@@ -36,19 +36,16 @@ const Model = ({ side, progress }) => {
     let targetOpacity = 1
 
     if (r1 <= 0.3) {
-
       const t = r1 / 0.3
       const startX = 0
       const endX = side === 'left' ? -19 : 19
       targetX = THREE.MathUtils.lerp(startX, endX, t)
     } else if (r1 <= 0.7) {
-
       const t = (r1 - 0.3) / 0.4
       const startX = side === 'left' ? -19 : 19
       const endX = side === 'left' ? 19 : -19
       targetX = THREE.MathUtils.lerp(startX, endX, t)
     } else {
-
       const t = (r1 - 0.7) / 0.3
       const startX = side === 'left' ? 19 : -19
       const endX = side === 'left' ? 25 : -25
@@ -63,8 +60,6 @@ const Model = ({ side, progress }) => {
     group.current.position.y = targetYOffset
     group.current.position.z = targetZ
 
-
-    group.current.rotation.y += delta * 0.4
     group.current.rotation.z = side === 'left' ? r1 * Math.PI : -r1 * Math.PI
 
 

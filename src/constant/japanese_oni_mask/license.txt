@@ -1,0 +1,11 @@
+Model Information:
+* title:	Japanese Oni Mask
+* source:	https://sketchfab.com/3d-models/japanese-oni-mask-9df68b42f2044ca2866fe99217ba343b
+* author:	Snailpot MaysaChan (https://sketchfab.com/snailpot_maysachan)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Japanese Oni Mask" (https://sketchfab.com/3d-models/japanese-oni-mask-9df68b42f2044ca2866fe99217ba343b) by Snailpot MaysaChan (https://sketchfab.com/snailpot_maysachan) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

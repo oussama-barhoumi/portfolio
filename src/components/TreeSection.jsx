@@ -108,11 +108,11 @@ function BranchHotspot({ data, hoveredNode, setHoveredNode }) {
   useEffect(() => {
     if (isHovered) {
       playHoverSound()
-      gsap.to(labelRef.current, { opacity: 1, y: -20, scale: 1.1, duration: 0.5, ease: 'back.out(1.5)' })
+      if (labelRef.current) gsap.to(labelRef.current, { opacity: 1, y: -20, scale: 1.1, duration: 0.5, ease: 'back.out(1.5)' })
       if (glowRef.current) gsap.to(glowRef.current.scale, { x: 1.5, y: 1.5, z: 1.5, duration: 0.5 })
       if (lineRef.current) gsap.fromTo(lineRef.current, { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.6, ease: 'power3.out' })
     } else {
-      gsap.to(labelRef.current, { opacity: 0, y: 0, scale: 0.9, duration: 0.4, ease: 'power2.inOut' })
+      if (labelRef.current) gsap.to(labelRef.current, { opacity: 0, y: 0, scale: 0.9, duration: 0.4, ease: 'power2.inOut' })
       if (glowRef.current) gsap.to(glowRef.current.scale, { x: 1, y: 1, z: 1, duration: 0.5 })
       if (lineRef.current) gsap.to(lineRef.current, { scaleX: 0, opacity: 0, duration: 0.4, ease: 'power3.in' })
     }
@@ -225,32 +225,34 @@ function LeftPanel({ hoveredNode }) {
       const cat = CATEGORIES.find(c => c.id === hoveredNode)
       setActiveObj(cat)
 
-      gsap.killTweensOf([panelRef.current, titleRef.current, descRef.current])
+      gsap.killTweensOf([panelRef.current, titleRef.current, descRef.current].filter(Boolean))
 
+      if (panelRef.current) {
+        gsap.to(panelRef.current, {
+          opacity: 1,
+          x: 0,
+          scale: 1,
+          filter: 'blur(0px)',
+          duration: 0.5,
+          ease: 'power3.out'
+        })
+      }
 
-      gsap.to(panelRef.current, {
-        opacity: 1,
-        x: 0,
-        scale: 1,
-        filter: 'blur(0px)',
-        duration: 0.5,
-        ease: 'power3.out'
-      })
-
-
-      gsap.fromTo(titleRef.current, { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, delay: 0.1, ease: 'back.out(1)' })
-      gsap.fromTo(descRef.current, { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, delay: 0.2, ease: 'power2.out' })
+      if (titleRef.current) gsap.fromTo(titleRef.current, { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, delay: 0.1, ease: 'back.out(1)' })
+      if (descRef.current) gsap.fromTo(descRef.current, { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, delay: 0.2, ease: 'power2.out' })
     } else {
 
-      gsap.killTweensOf([panelRef.current, titleRef.current, descRef.current])
-      gsap.to(panelRef.current, {
-        opacity: 0,
-        x: -40,
-        scale: 0.95,
-        filter: 'blur(10px)',
-        duration: 0.4,
-        ease: 'power3.in'
-      })
+      gsap.killTweensOf([panelRef.current, titleRef.current, descRef.current].filter(Boolean))
+      if (panelRef.current) {
+        gsap.to(panelRef.current, {
+          opacity: 0,
+          x: -40,
+          scale: 0.95,
+          filter: 'blur(10px)',
+          duration: 0.4,
+          ease: 'power3.in'
+        })
+      }
     }
   }, [hoveredNode])
 
