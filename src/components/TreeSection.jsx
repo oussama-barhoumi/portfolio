@@ -1,38 +1,36 @@
 import React, { useRef, useState, useMemo, useEffect } from 'react'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { useGLTF, Html, Float, Sparkles, Environment, ContactShadows, Stars } from '@react-three/drei'
-import { EffectComposer, Bloom, Noise, Vignette } from '@react-three/postprocessing'
-import { BlendFunction } from 'postprocessing'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { useGLTF, Html, Float, Sparkles, ContactShadows } from '@react-three/drei'
 import * as THREE from 'three'
 import gsap from 'gsap'
 import GlitchText from './GlitchText'
 
-import mapleUrl from '../constant/japanese_red_maple.glb'
+const SAKURA_URL = '/constant/sakura/scene.gltf'
 
 
 const CATEGORIES = [
   {
     id: 'fullstack',
     label: 'Full Stack Developer',
-    position: [1.5, 2.5, 1.5],
+    position: [2.3, 2.1, 1.2],
     desc: 'End-to-end ownership — from database schema to pixel-perfect UI. I architect systems that scale under pressure, bridging distributed backends with interfaces that feel instant. Every layer considered. Every decision deliberate.'
   },
   {
     id: 'ai',
     label: 'AI Engineering',
-    position: [4.39, 2.5, -1.0],
+    position: [4.2, 2.8, -0.8],
     desc: 'Engineering autonomous intelligence systems. From training bespoke large language models to deploying sophisticated machine learning pipelines that adapt proactively to dynamic data patterns.'
   },
   {
     id: 'uiux',
     label: 'UI/UX Design',
-    position: [1.0, 1.5, 2.0],
+    position: [1.1, 0.7, 2.2],
     desc: 'Design is tension — between clarity and drama, stillness and motion. I craft interfaces where every transition earns its place and every layout provokes a reaction. Premium isn\'t a style. It\'s a standard.'
   },
   {
     id: '3d',
     label: '3D Modeling',
-    position: [5, 0.8, -1.0],
+    position: [5.5, 0.3, -0.8],
     desc: 'Geometry is language. I speak it fluently — sculpting WebGL environments where light behaves, shadows breathe, and depth is felt. Spatial experiences built not just to impress, but to immerse.'
   }
 ]
@@ -55,48 +53,54 @@ const playHoverSound = () => {
 
     oscillator.start()
     oscillator.stop(audioCtx.currentTime + 0.1)
-  } catch (e) {
-
+  } catch {
+    // audio not supported
   }
 }
 
 function TreeModel({ hoveredNode }) {
-  const { scene } = useGLTF(mapleUrl)
+  const { scene } = useGLTF(SAKURA_URL)
   const group = useRef()
 
-  const clonedScene = useMemo(() => {
+  const { clonedScene, meshMaterials } = useMemo(() => {
     const clone = scene.clone()
+    const mats = []
     clone.traverse((node) => {
       if (node.isMesh) {
         node.material = node.material.clone()
         node.material.emissive = new THREE.Color(0x000000)
         node.material.emissiveIntensity = 0
+        mats.push(node.material)
       }
     })
-    return clone
+    return { clonedScene: clone, meshMaterials: mats }
   }, [scene])
 
   useEffect(() => {
-    clonedScene.traverse((node) => {
-      if (node.isMesh) {
-        if (hoveredNode) {
-          gsap.to(node.material.emissive, {
-            r: 0.15, g: 0.0, b: 0.05,
-            duration: 0.6,
-            ease: 'power2.out'
-          })
-        } else {
-          gsap.to(node.material.emissive, {
-            r: 0, g: 0, b: 0,
-            duration: 0.6,
-            ease: 'power2.out'
-          })
-        }
+    meshMaterials.forEach((mat) => {
+      // Blossom meshes get a warm pink glow; bark gets a subtle red
+      const isBlossom = mat.name?.toLowerCase().includes('sakura') ||
+                        mat.map?.image?.src?.includes('sakura')
+      if (hoveredNode) {
+        gsap.to(mat.emissive, {
+          r: isBlossom ? 0.30 : 0.12,
+          g: isBlossom ? 0.06 : 0.01,
+          b: isBlossom ? 0.10 : 0.03,
+          duration: 0.65,
+          ease: 'power2.out',
+        })
+      } else {
+        gsap.to(mat.emissive, {
+          r: 0, g: 0, b: 0,
+          duration: 0.65,
+          ease: 'power2.out',
+        })
       }
     })
-  }, [clonedScene, hoveredNode])
+  }, [meshMaterials, hoveredNode])
 
-  return <primitive ref={group} object={clonedScene} scale={0.030} position={[3, -1.9, 0]} />
+  // Sakura GLTF is much larger than the GLB maple — scale and re-center accordingly
+  return <primitive ref={group} object={clonedScene} scale={0.12} position={[2.9, -1.5, 0]} />
 }
 
 function BranchHotspot({ data, hoveredNode, setHoveredNode }) {
@@ -106,15 +110,19 @@ function BranchHotspot({ data, hoveredNode, setHoveredNode }) {
   const lineRef = useRef()
 
   useEffect(() => {
+    // Kill any in-progress tweens on these elements before starting new ones
+    // — prevents overlapping animations when hover state flips quickly
+    gsap.killTweensOf([labelRef.current, lineRef.current].filter(Boolean))
+
     if (isHovered) {
       playHoverSound()
-      if (labelRef.current) gsap.to(labelRef.current, { opacity: 1, y: -20, scale: 1.1, duration: 0.5, ease: 'back.out(1.5)' })
-      if (glowRef.current) gsap.to(glowRef.current.scale, { x: 1.5, y: 1.5, z: 1.5, duration: 0.5 })
-      if (lineRef.current) gsap.fromTo(lineRef.current, { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.6, ease: 'power3.out' })
+      if (labelRef.current) gsap.to(labelRef.current, { opacity: 1, y: -18, scale: 1.05, duration: 0.55, ease: 'power3.out' })
+      if (glowRef.current) gsap.to(glowRef.current.scale, { x: 1.4, y: 1.4, z: 1.4, duration: 0.6, ease: 'power2.out' })
+      if (lineRef.current) gsap.fromTo(lineRef.current, { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.5, ease: 'expo.out' })
     } else {
-      if (labelRef.current) gsap.to(labelRef.current, { opacity: 0, y: 0, scale: 0.9, duration: 0.4, ease: 'power2.inOut' })
-      if (glowRef.current) gsap.to(glowRef.current.scale, { x: 1, y: 1, z: 1, duration: 0.5 })
-      if (lineRef.current) gsap.to(lineRef.current, { scaleX: 0, opacity: 0, duration: 0.4, ease: 'power3.in' })
+      if (labelRef.current) gsap.to(labelRef.current, { opacity: 0, y: 0, scale: 0.92, duration: 0.38, ease: 'power2.inOut' })
+      if (glowRef.current) gsap.to(glowRef.current.scale, { x: 1, y: 1, z: 1, duration: 0.4, ease: 'power2.out' })
+      if (lineRef.current) gsap.to(lineRef.current, { scaleX: 0, opacity: 0, duration: 0.30, ease: 'power2.in' })
     }
   }, [isHovered])
 
@@ -140,7 +148,7 @@ function BranchHotspot({ data, hoveredNode, setHoveredNode }) {
 
       {isHovered && (
         <group ref={glowRef}>
-          <Sparkles count={40} scale={3} size={6} speed={0.6} opacity={1} color="#ff3366" />
+          <Sparkles count={22} scale={3.5} size={4.5} speed={0.30} opacity={0.80} color="#ffaac8" />
         </group>
       )}
 
@@ -153,7 +161,7 @@ function BranchHotspot({ data, hoveredNode, setHoveredNode }) {
 
           <div
             ref={lineRef}
-            className="absolute top-1/2 right-full w-[25vw] h-[1px] bg-gradient-to-r from-transparent via-red-500/50 to-red-500 origin-right mr-4"
+            className="absolute top-1/2 right-full w-[25vw] h-px bg-linear-to-r from-transparent via-red-500/50 to-red-500 origin-right mr-4"
           />
 
           <div className="px-6 py-3 rounded-full border border-red-500/30 bg-black/60 backdrop-blur-xl relative overflow-hidden shadow-[0_0_20px_rgba(255,51,102,0.2)] flex items-center gap-3">
@@ -161,7 +169,7 @@ function BranchHotspot({ data, hoveredNode, setHoveredNode }) {
             <h3 className="text-white font-syne font-bold text-sm tracking-[0.2em] uppercase">
               {data.label}
             </h3>
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/5 to-transparent w-full h-[200%] -translate-y-full animate-[scan_2s_linear_infinite]" />
+            <div className="absolute inset-0 bg-linear-to-b from-transparent via-white/5 to-transparent w-full h-[200%] -translate-y-full animate-[scan_2s_linear_infinite]" />
           </div>
         </div>
       </Html>
@@ -170,28 +178,24 @@ function BranchHotspot({ data, hoveredNode, setHoveredNode }) {
 }
 
 function SceneContent({ hoveredNode, setHoveredNode }) {
-  const { camera, mouse } = useThree()
-
-  useFrame(() => {
-    gsap.to(camera.position, {
-      x: 1 + mouse.x * 3,
-      y: 3 + mouse.y * 1.5,
-      duration: 2,
-      ease: 'power3.out'
-    })
+  useFrame((state, delta) => {
+    // Read camera + mouse from state (not useThree) to satisfy mutation rules
+    // Frame-rate-independent exponential lerp — replaces GSAP tween that was
+    // creating a new animation instance on every single frame (60×/sec memory churn)
+    const { camera, mouse } = state
+    const t = 1 - Math.exp(-4 * delta)
+    camera.position.x = THREE.MathUtils.lerp(camera.position.x, 1 + mouse.x * 3, t)
+    camera.position.y = THREE.MathUtils.lerp(camera.position.y, 3 + mouse.y * 1.5, t)
     camera.lookAt(0, 1, 0)
   })
 
   return (
     <>
-      <color attach="background" args={['#050508']} />
-      <fog attach="fog" args={['#050508', 8, 25]} />
+      <ambientLight intensity={0.30} />
+      <directionalLight position={[5, 10, 5]} intensity={2.0} color="#ffe8f0" castShadow />
+      <spotLight position={[-6, 4, 8]}  angle={0.45} penumbra={1} intensity={5} color="#ff6b9d" />
+      <spotLight position={[8, -4, -4]} angle={0.40} penumbra={1} intensity={3} color="#660022" />
 
-      <ambientLight intensity={0.2} />
-      <directionalLight position={[5, 10, 5]} intensity={1.5} color="#ffd1d1" castShadow />
-
-      <spotLight position={[-8, 5, 10]} angle={0.4} penumbra={1} intensity={5} color="#ff3366" />
-      <spotLight position={[8, -5, -5]} angle={0.4} penumbra={1} intensity={5} color="#3b82f6" />
 
       <Float speed={1.2} rotationIntensity={0.15} floatIntensity={0.4}>
         <TreeModel hoveredNode={hoveredNode} />
@@ -200,15 +204,7 @@ function SceneContent({ hoveredNode, setHoveredNode }) {
         ))}
       </Float>
 
-      <ContactShadows position={[0, -3.5, 0]} opacity={0.8} scale={15} blur={2.5} far={4} color="#000000" />
-      <Environment preset="night" />
-      <Stars radius={100} depth={50} count={3000} factor={4} saturation={0} fade speed={1} />
-
-      <EffectComposer disableNormalPass multisampling={0}>
-        <Bloom luminanceThreshold={0.15} luminanceSmoothing={0.9} intensity={1.5} opacity={0.8} blendFunction={BlendFunction.SCREEN} />
-        <Noise opacity={0.04} />
-        <Vignette eskil={false} offset={0.1} darkness={1.1} />
-      </EffectComposer>
+      <ContactShadows position={[0, -3.5, 0]} opacity={0.5} scale={15} blur={2.5} far={4} color="#000000" />
     </>
   )
 }
@@ -218,13 +214,14 @@ function LeftPanel({ hoveredNode }) {
   const panelRef = useRef(null)
   const titleRef = useRef(null)
   const descRef = useRef(null)
-  const [activeObj, setActiveObj] = useState(null)
+
+  const activeObj = useMemo(
+    () => CATEGORIES.find(c => c.id === hoveredNode) ?? null,
+    [hoveredNode]
+  )
 
   useEffect(() => {
     if (hoveredNode) {
-      const cat = CATEGORIES.find(c => c.id === hoveredNode)
-      setActiveObj(cat)
-
       gsap.killTweensOf([panelRef.current, titleRef.current, descRef.current].filter(Boolean))
 
       if (panelRef.current) {
@@ -263,14 +260,14 @@ function LeftPanel({ hoveredNode }) {
       style={{ filter: 'blur(10px)' }}
     >
 
-      <div className="absolute left-0 top-[8%] bottom-[8%] w-[2px] bg-gradient-to-b from-transparent via-red-500 to-transparent animate-pulse" />
+      <div className="absolute left-0 top-[8%] bottom-[8%] w-[2px] bg-linear-to-b from-transparent via-red-500 to-transparent animate-pulse" />
 
       <div className="absolute top-0 right-0 w-7 h-7 border-t border-r border-red-500/40 rounded-tr-2xl" />
       <div className="absolute bottom-0 left-0 w-5 h-5 border-b border-l border-red-500/20" />
-      <div className="absolute bottom-0 left-5 right-5 h-px bg-gradient-to-r from-transparent via-red-500/30 to-transparent" />
+      <div className="absolute bottom-0 left-5 right-5 h-px bg-linear-to-r from-transparent via-red-500/30 to-transparent" />
 
 
-      <div className="absolute inset-0 rounded-tr-2xl rounded-br-2xl bg-gradient-to-br from-red-900/10 to-black/60 backdrop-blur-2xl" />
+      <div className="absolute inset-0 rounded-tr-2xl rounded-br-2xl bg-linear-to-br from-red-900/10 to-black/60 backdrop-blur-2xl" />
 
 
       {[
@@ -307,10 +304,15 @@ const TreeSection = () => {
   const [hoveredNode, setHoveredNode] = useState(null)
 
   return (
-    <section className="relative w-full h-screen bg-[#050508] z-30 overflow-hidden cursor-crosshair">
+    <section className="relative w-full h-screen bg-transparent z-30 overflow-hidden">
 
-      <div className="absolute inset-0 z-0">
-        <Canvas camera={{ position: [1, 3, 10], fov: 45 }} dpr={[1, 2]}>
+      <div className="absolute inset-0 z-1">
+        <Canvas
+          camera={{ position: [1, 3, 10], fov: 45 }}
+          gl={{ antialias: true, alpha: true }}
+          dpr={[1, 1.5]}
+          style={{ background: 'transparent' }}
+        >
           <React.Suspense fallback={
             <Html center>
               <div className="text-white/50 text-xs tracking-[0.3em] uppercase animate-pulse">
@@ -326,7 +328,7 @@ const TreeSection = () => {
 
       <div className="absolute top-12 left-10 md:left-24 z-10 pointer-events-auto">
         <GlitchText text="CORE DISCIPLINES" className="text-3xl md:text-5xl leading-none" />
-        <div className="w-16 h-1 bg-gradient-to-r from-red-500 to-transparent mt-6 pointer-events-none" />
+        <div className="w-16 h-1 bg-linear-to-r from-red-500 to-transparent mt-6 pointer-events-none" />
         <p className="text-slate-400 mt-6 text-xs md:text-sm font-inter tracking-[0.2em] uppercase max-w-xs pointer-events-none">
           Explore the interconnected<br />roots of my expertise.
         </p>
@@ -344,6 +346,6 @@ const TreeSection = () => {
   )
 }
 
-useGLTF.preload(mapleUrl)
+useGLTF.preload(SAKURA_URL)
 
 export default TreeSection
