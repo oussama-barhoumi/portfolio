@@ -1,0 +1,11 @@
+Model Information:
+* title:	tree
+* source:	https://sketchfab.com/3d-models/tree-e8d692bd800e4ab6918e40b0890ea41a
+* author:	- (https://sketchfab.com/emotionillust)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "tree" (https://sketchfab.com/3d-models/tree-e8d692bd800e4ab6918e40b0890ea41a) by - (https://sketchfab.com/emotionillust) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
