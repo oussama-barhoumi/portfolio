@@ -1,27 +1,72 @@
-import { useEffect } from 'react'
-import Home from './pages/home'
-import GlobalBackground from './components/GlobalBackground'
-import CursorGlow from './components/CursorGlow'
-import gsap from 'gsap'
+import React, { useEffect, Suspense } from 'react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import gsap from 'gsap'
+import Lenis from '@studio-freight/lenis'
 
+import Navbar from './components/Navbar'
+import DotCursor from './components/DotCursor'
+import HeroScene from './components/HeroScene'
+import TextRevealSection from './components/TextRevealSection'
+import TreeSection from './components/TreeSection'
+import WorksSection from './components/WorksSection'
+import TechBubbles from './components/TechBubbles'
+import GlobalBackground from './components/GlobalBackground'
+import ContactSection from './components/ContactSection'
+
+const TokyoHero = React.lazy(() => import('./components/TokyoHero'))
+
+// Register plugins once at the top
 gsap.registerPlugin(ScrollTrigger)
 
-function App() {
-  // Refresh all ScrollTrigger pins after all sections have mounted
-  // so HeroScene, TextRevealSection and WorksSection stay in sync.
-  useEffect(() => { ScrollTrigger.refresh() }, [])
+const App = () => {
+  useEffect(() => {
+    // Lenis smooth scroll setup
+    const lenis = new Lenis({
+      duration: 1.4,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smooth: true,
+    })
+
+    const lenisRaf = (time) => {
+      lenis.raf(time * 1000)
+    }
+
+    gsap.ticker.add(lenisRaf)
+    gsap.ticker.lagSmoothing(0)
+
+    // Scroll trigger refresh
+    setTimeout(() => {
+      ScrollTrigger.refresh()
+      ScrollTrigger.sort()
+    }, 300)
+
+    return () => {
+      gsap.ticker.remove(lenisRaf)
+      lenis.destroy()
+    }
+  }, [])
 
   return (
     <>
-      {/* Fixed atmospheric canvas — z-0, behind everything */}
       <GlobalBackground />
-      {/* Three-layer blue neon cursor — site-wide, z-9999 */}
-      <CursorGlow />
-      {/* z-index: 1 creates a stacking context above GlobalBackground (z-0)
-          so all page sections (transparent or opaque) render correctly on top */}
+      <Navbar />
+      <DotCursor />
       <main style={{ position: 'relative', zIndex: 1 }}>
-        <Home />
+        <section id="hero">
+          <HeroScene />
+        </section>
+        <TextRevealSection />
+        <TreeSection />
+        <section id="works">
+          <WorksSection />
+        </section>
+        <section id="tech">
+          <TechBubbles />
+        </section>
+        <Suspense fallback={null}>
+          <TokyoHero />
+        </Suspense>
+        <ContactSection />
       </main>
     </>
   )

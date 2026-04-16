@@ -27,7 +27,7 @@ function BgScene() {
       {/* Subtle accent from below */}
       <pointLight position={[0, -8, 4]} intensity={0.8} color="#0055aa" />
 
-      <Stars radius={130} depth={70} count={3500} factor={4} saturation={0} fade speed={0.5} />
+      <Stars radius={130} depth={70} count={1500} factor={4} saturation={0} fade speed={0.5} />
 
       <EffectComposer disableNormalPass multisampling={0}>
         <Bloom
@@ -44,23 +44,37 @@ function BgScene() {
 }
 
 const GlobalBackground = () => (
-  <Canvas
-    frameloop="always"
-    camera={{ position: [0, 0, 10], fov: 60 }}
-    gl={{ antialias: false, alpha: false }}
-    dpr={[1, 1]}
-    style={{
-      position:      'fixed',
-      top:           0,
-      left:          0,
-      width:         '100vw',
-      height:        '100vh',
-      zIndex:        0,
+  <>
+    <Canvas
+      frameloop="always"
+      camera={{ position: [0, 0, 10], fov: 60 }}
+      gl={{ antialias: false, alpha: false }}
+      dpr={[1, 1]}
+      style={{
+        position:      'fixed',
+        top:           0,
+        left:          0,
+        width:         '100vw',
+        height:        '100vh',
+        zIndex:        0, // Pushed behind white sections
+        pointerEvents: 'none',
+      }}
+    >
+      <BgScene />
+    </Canvas>
+
+    {/* Global TokyoHero Grid overlay */}
+    <div aria-hidden style={{
+      position: 'fixed', inset: 0,
       pointerEvents: 'none',
-    }}
-  >
-    <BgScene />
-  </Canvas>
+      zIndex: 0, // Sits between Canvas and foreground
+      backgroundImage: `
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)
+      `,
+      backgroundSize: '40px 40px',
+    }} />
+  </>
 )
 
 export default GlobalBackground

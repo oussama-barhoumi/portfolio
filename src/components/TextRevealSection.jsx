@@ -1,15 +1,10 @@
 import React, { useRef, useEffect } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { ACCENT, BRIGHT, MID, BG } from '../constant/theme'
 
 gsap.registerPlugin(ScrollTrigger)
 
-// ─── Theme ────────────────────────────────────────────────────────────────────
-const ACCENT = '#00aaff'
-const BRIGHT = '#33bbff'
-const MID = '#0077cc'
-
-// ─── Config ───────────────────────────────────────────────────────────────────
 const LINES = [
   {
     label: null,
@@ -48,12 +43,9 @@ const LINES = [
   },
 ]
 
-// Each line occupies this many scrub-timeline units
 const DUR = 1.0
-// Hold at end before unpin
 const HOLD = 0.6
 
-// ─── Component ────────────────────────────────────────────────────────────────
 const TextRevealSection = () => {
   const sectionRef = useRef()
   const linesRef = useRef([])
@@ -66,7 +58,6 @@ const TextRevealSection = () => {
     const glows = glowsRef.current.filter(Boolean)
     if (!wrappers.length) return
 
-    // ── Initial state ──────────────────────────────────────────────────────
     gsap.set(wrappers, {
       opacity: 0,
       y: 48,
@@ -77,7 +68,6 @@ const TextRevealSection = () => {
 
     const totalDur = lineCount * DUR + HOLD
 
-    // ── Pinned scrub timeline ──────────────────────────────────────────────
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
@@ -89,12 +79,10 @@ const TextRevealSection = () => {
         onUpdate: (self) => {
           const p = self.progress
 
-          // Side progress bar
           if (barFillRef.current) {
             barFillRef.current.style.transform = `scaleY(${p})`
           }
 
-          // Active-line glow: highlight the line that is currently revealing
           const lineIdx = p * totalDur / DUR
           glows.forEach((glow, i) => {
             const active = Math.floor(lineIdx) === i && p < 0.97
@@ -104,7 +92,6 @@ const TextRevealSection = () => {
       },
     })
 
-    // ── Sequential line reveals ────────────────────────────────────────────
     wrappers.forEach((wrapper, i) => {
       tl.to(
         wrapper,
@@ -120,7 +107,6 @@ const TextRevealSection = () => {
       )
     })
 
-    // Hold all lines visible
     tl.to({}, { duration: HOLD })
 
     const section = sectionRef.current
@@ -136,17 +122,15 @@ const TextRevealSection = () => {
     <section
       ref={sectionRef}
       className="relative w-full h-screen z-20 flex items-center justify-center overflow-hidden"
-      style={{ background: '#05070a' }}
+      style={{ background: '#05070a' }} // SALMON
     >
-      {/* ── Horizontal scan line ───────────────────────────────────────────── */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,170,255,0.012) 2px, rgba(0,170,255,0.012) 4px)',
+          backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.02) 2px, rgba(255,255,255,0.02) 4px)',
           zIndex: 1,
         }}
       />
-      {/* ── Film grain ────────────────────────────────────────────────────── */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -157,56 +141,51 @@ const TextRevealSection = () => {
         }}
       />
 
-      {/* ── Left progress bar — blue neon ─────────────────────────────────── */}
       <div
         className="absolute left-7 top-1/2 -translate-y-1/2 w-px hidden md:block"
-        style={{ height: '45vh', background: 'rgba(0,170,255,0.12)' }}
+        style={{ height: '45vh', background: 'rgba(0,170,255,0.12)' }} 
       >
         <div
           ref={barFillRef}
           className="w-full h-full origin-top"
           style={{
-            background: `linear-gradient(to bottom, ${BRIGHT}, ${MID})`,
+            background: '#ff3366', 
             transform: 'scaleY(0)',
-            boxShadow: `0 0 8px ${ACCENT}88`,
+            boxShadow: `0 0 8px rgba(255,51,102,0.4)`, 
           }}
         />
       </div>
 
-      {/* ── Top label ─────────────────────────────────────────────────────── */}
       <div
         className="absolute top-8 left-8 md:left-16 flex items-center gap-3"
-        style={{ opacity: 0.35 }}
+        style={{ opacity: 0.65 }}
       >
-        <div className="w-5 h-px" style={{ background: ACCENT }} />
+        <div className="w-5 h-px" style={{ background: '#00aaff' }} /> {/* STEEL */}
         <span
           className="text-[9px] uppercase tracking-[0.35em]"
-          style={{ fontFamily: "'Space Mono', monospace", color: BRIGHT }}
+          style={{ fontFamily: "'Space Mono', monospace", color: '#00aaff' }}
         >
           Identity
         </span>
       </div>
 
-      {/* ── Right corner label ────────────────────────────────────────────── */}
       <div
         className="absolute top-8 right-8 md:right-12"
-        style={{ opacity: 0.22 }}
+        style={{ opacity: 0.65 }}
       >
         <span
-          className="text-[9px] uppercase tracking-[0.3em] text-white"
-          style={{ fontFamily: "'Space Mono', monospace" }}
+          className="text-[9px] uppercase tracking-[0.3em]"
+          style={{ fontFamily: "'Space Mono', monospace", color: '#00aaff' }}
         >
           Portfolio 2025
         </span>
       </div>
 
-      {/* ── Lines ─────────────────────────────────────────────────────────── */}
       <div className="relative flex flex-col items-center gap-1 md:gap-2 px-6 w-full max-w-5xl" style={{ zIndex: 2 }}>
 
-        {/* Thin neon rule above name */}
         <div
           className="w-10 h-px mb-5"
-          style={{ background: `linear-gradient(90deg, transparent, ${ACCENT}, transparent)` }}
+          style={{ background: `linear-gradient(90deg, transparent, #00aaff, transparent)` }} 
         />
 
         {LINES.map((line, i) => (
@@ -216,7 +195,6 @@ const TextRevealSection = () => {
             className="relative flex items-center justify-center w-full select-none"
             style={{ willChange: 'transform, opacity, filter' }}
           >
-            {/* Number label (left, desktop only) */}
             {line.label && (
               <span
                 className="absolute left-0 hidden md:block text-xs tracking-widest"
@@ -224,14 +202,13 @@ const TextRevealSection = () => {
                   fontFamily: "'Space Mono', monospace",
                   top: '50%',
                   transform: 'translateY(-50%)',
-                  color: `${ACCENT}66`,
+                  color: 'rgba(0,170,255,0.6)', 
                 }}
               >
                 {line.label}
               </span>
             )}
 
-            {/* Main text */}
             <span
               className="block text-center font-black uppercase"
               style={{
@@ -239,26 +216,24 @@ const TextRevealSection = () => {
                 fontSize: line.size,
                 letterSpacing: line.spacing,
                 lineHeight: 1,
-                color: line.isName ? 'transparent' : 'rgba(255,255,255,0.92)',
-                textShadow: line.isName ? 'none' : `0 0 30px ${ACCENT}33`,
+                color: line.isName ? 'transparent' : '#e8edf2', 
+                textShadow: line.isName ? 'none' : `0 0 30px rgba(0,170,255,0.15)`, // Light STEEL shadow
                 ...(line.isName && {
-                  background: `linear-gradient(135deg, #ffffff 0%, ${BRIGHT} 40%, #ffffff 100%)`,
+                  background: `linear-gradient(135deg, #e8edf2 0%, #00aaff 100%)`, 
                   WebkitBackgroundClip: 'text',
                   backgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
-                  filter: `drop-shadow(0 0 18px ${ACCENT}66)`,
                 }),
               }}
             >
               {line.text}
             </span>
 
-            {/* Per-line blue glow (active during reveal) */}
             <div
               ref={(el) => { glowsRef.current[i] = el }}
               className="absolute inset-0 pointer-events-none"
               style={{
-                background: `radial-gradient(ellipse 70% 120% at 50% 50%, ${ACCENT}28 0%, transparent 70%)`,
+                background: `radial-gradient(ellipse 70% 120% at 50% 50%, rgba(0,170,255,0.15) 0%, transparent 70%)`, // Light STEEL glow
                 opacity: 0,
                 filter: 'blur(8px)',
               }}
@@ -266,32 +241,30 @@ const TextRevealSection = () => {
           </div>
         ))}
 
-        {/* Thin rule below */}
         <div
           className="w-10 h-px mt-4"
-          style={{ background: `linear-gradient(90deg, transparent, ${ACCENT}, transparent)` }}
+          style={{ background: `linear-gradient(90deg, transparent, #00aaff, transparent)` }} 
         />
 
       </div>
 
-      {/* ── Scroll hint ───────────────────────────────────────────────────── */}
       <div
         className="absolute bottom-7 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
-        style={{ opacity: 0.3 }}
+        style={{ opacity: 0.6 }}
       >
         <span
           className="text-[8px] uppercase tracking-[0.35em]"
-          style={{ fontFamily: "'Space Mono', monospace", color: BRIGHT }}
+          style={{ fontFamily: "'Space Mono', monospace", color: '#00aaff' }} 
         >
           Scroll
         </span>
         <div
           className="w-px h-8"
-          style={{ background: `linear-gradient(to bottom, ${ACCENT}, transparent)` }}
+          style={{ background: `linear-gradient(to bottom, #00aaff, transparent)` }} 
         />
       </div>
     </section>
   )
 }
 
-export default TextRevealSection
+export default React.memo(TextRevealSection)

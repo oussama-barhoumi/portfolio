@@ -1,14 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import gsap from 'gsap'
 import logoUrl from '../constant/logopro.png'
 import ProjectDetails from './ProjectDetails'
+import { ACCENT, BRIGHT, BG } from '../constant/theme'
 
-// ─── Theme ────────────────────────────────────────────────────────────────────
-const ACCENT = '#00aaff'
-const BRIGHT = '#33bbff'
-const BG     = '#05070a'
-
-// ─── Projects (with icons) ────────────────────────────────────────────────────
 const PROJECTS = [
   { 
     id: 1, 
@@ -17,7 +13,7 @@ const PROJECTS = [
     category: 'UI/UX Design', 
     year: '2024', 
     image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=600&auto=format&fit=crop', 
-    color: '#00aaff', 
+    color: ACCENT, 
     tags: ['React','Figma'],
     resume: 'A comprehensive modern redesign of a fintech dashboard focusing on dark mode accessibility, micro-animations, and high-contrast data visualization. The project involved wireframing, prototyping, and final implementation using React and Tailwind.',
     techStack: ['React', 'Figma', 'Framer Motion', 'TailwindCSS'],
@@ -77,7 +73,6 @@ const PROJECTS = [
   },
 ]
 
-// ─── Static fan positions (like a hand of playing cards) ──────────────────────
 const FAN_CONFIGS = [
   { x: -280, y:  60, rotY:  42, rotZ:  -8, scale: 0.82, z: 0   },
   { x: -140, y:  20, rotY:  22, rotZ:  -4, scale: 0.90, z: 80  },
@@ -86,7 +81,6 @@ const FAN_CONFIGS = [
   { x:  280, y:  60, rotY: -42, rotZ:   8, scale: 0.82, z: 0   },
 ]
 
-// ─── Component ────────────────────────────────────────────────────────────────
 const WorksPage = ({ open, onClose }) => {
   const overlayRef   = useRef(null)
   const navRef       = useRef(null)
@@ -96,31 +90,26 @@ const WorksPage = ({ open, onClose }) => {
   const [selectedProject, setSelectedProject] = useState(null)
   const [mounted, setMounted] = useState(false)
 
-  // Mount DOM before animating in
   useEffect(() => {
     if (open) setMounted(true)
   }, [open])
 
-  // ── Entrance timeline ──────────────────────────────────────────────────────
   useEffect(() => {
     if (!open || !mounted || !overlayRef.current) return
 
     const tl = gsap.timeline()
 
-    // Overlay slides up
     tl.fromTo(overlayRef.current,
       { y: '100%', opacity: 0 },
       { y: '0%',   opacity: 1, duration: 0.9, ease: 'expo.out' }
     )
 
-    // Nav fades in
     tl.fromTo(navRef.current,
       { y: -30, opacity: 0 },
       { y: 0,   opacity: 1, duration: 0.5, ease: 'power3.out' },
       '0.4'
     )
 
-    // List items stagger in from left
     tl.fromTo(listItemsRef.current.filter(Boolean),
       { x: -60, opacity: 0 },
       { x: 0,   opacity: 1, duration: 0.6, stagger: 0.07, ease: 'power3.out' },
@@ -128,16 +117,13 @@ const WorksPage = ({ open, onClose }) => {
     )
   }, [open, mounted])
 
-  // ── Fan cards entrance — fly in from right one by one ──────────────────────
   useEffect(() => {
     if (!open || !mounted) return
     const cards = cardsRef.current.filter(Boolean)
     if (!cards.length) return
 
-    // Start all cards off-screen right
     gsap.set(cards, { x: 600, opacity: 0, rotateY: -30 })
 
-    // Stagger into their fan positions
     gsap.to(cards, {
       x:       (i) => FAN_CONFIGS[i].x,
       opacity: 1,
@@ -149,7 +135,6 @@ const WorksPage = ({ open, onClose }) => {
     })
   }, [open, mounted])
 
-  // ── Close animation → unmount ──────────────────────────────────────────────
   const handleClose = () => {
     gsap.to(overlayRef.current, {
       y: '100%', opacity: 0,
@@ -163,32 +148,30 @@ const WorksPage = ({ open, onClose }) => {
 
   if (!mounted) return null
 
-  return (
+  return createPortal(
     <div
       ref={overlayRef}
       style={{
         position:      'fixed',
         inset:         0,
         zIndex:        200,
-        background:    BG,
+        background:    '#0a0a0a', 
         display:       'flex',
         flexDirection: 'column',
         overflow:      'hidden',
       }}
     >
-      {/* ── Scan-line texture ─────────────────────────────────────────────── */}
       <div
         aria-hidden="true"
         style={{
           position:        'absolute',
           inset:           0,
           pointerEvents:   'none',
-          backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,170,255,0.012) 2px, rgba(0,170,255,0.012) 4px)',
+          backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.02) 2px, rgba(255,255,255,0.02) 4px)',
           zIndex:          0,
         }}
       />
 
-      {/* ── Nav ───────────────────────────────────────────────────────────── */}
       <nav
         ref={navRef}
         style={{
@@ -198,50 +181,56 @@ const WorksPage = ({ open, onClose }) => {
           alignItems:     'center',
           justifyContent: 'space-between',
           padding:        '22px 44px',
-          borderBottom:   '1px solid rgba(255,255,255,0.06)',
+          borderBottom:   '1px solid rgba(255,255,255,0.1)',
           flexShrink:     0,
         }}
       >
         <div style={{ display:'flex', gap:10, alignItems:'center' }}>
-          <img src={logoUrl} alt="Logo" style={{ height: 32, filter: 'drop-shadow(0 0 8px #00aaff55)' }} />
-          <span style={{ fontFamily:"'Space Mono', monospace", fontSize:11, color:'rgba(255,255,255,0.25)', letterSpacing:'0.1em' }}>Portfolio</span>
-          <span style={{ fontFamily:"'Space Mono', monospace", fontSize:11, color:'rgba(255,255,255,0.12)' }}>/</span>
+          <img src={logoUrl} alt="Logo" style={{ height: 32 }} />
+          <span style={{ fontFamily:"'Space Mono', monospace", fontSize:11, color:'rgba(255,255,255,0.5)', letterSpacing:'0.1em' }}>Portfolio</span>
+          <span style={{ fontFamily:"'Space Mono', monospace", fontSize:11, color:'rgba(255,255,255,0.3)' }}>/</span>
           <span style={{ fontFamily:"'Space Mono', monospace", fontSize:11, color:'#e8edf2', letterSpacing:'0.1em' }}>Works</span>
         </div>
 
         <div style={{ display:'flex', gap:16, alignItems:'center' }}>
-          <span style={{ fontFamily:"'Space Mono', monospace", fontSize:13, color:ACCENT, letterSpacing:'0.2em', opacity:0.7 }}>≡ &nbsp; ⊞</span>
+          <span style={{ fontFamily:"'Space Mono', monospace", fontSize:13, color:'#00aaff', letterSpacing:'0.2em', opacity:0.7 }}>≡ &nbsp; ⊞</span>
         </div>
 
         <div style={{ display:'flex', gap:24, alignItems:'center' }}>
-          <span style={{ fontFamily:"'Space Mono', monospace", fontSize:10, color:'rgba(255,255,255,0.3)', letterSpacing:'0.15em' }}>
+          <span style={{ fontFamily:"'Space Mono', monospace", fontSize:10, color:'rgba(255,255,255,0.5)', letterSpacing:'0.15em' }}>
             categorized / freestyle
           </span>
           <button
             onClick={handleClose}
-            style={{ border:'1px solid rgba(255,255,255,0.2)', borderRadius:4, padding:'8px 22px', fontFamily:"'Space Mono', monospace", fontSize:10, color:'#e8edf2', background:'transparent', cursor:'pointer', letterSpacing:'0.15em', transition:'border-color 0.3s, color 0.3s' }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = `${ACCENT}88`; e.currentTarget.style.color = BRIGHT }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'; e.currentTarget.style.color = '#e8edf2' }}
+            style={{ border:'1px solid rgba(255,255,255,0.2)', borderRadius:4, padding:'8px 22px', fontFamily:"'Space Mono', monospace", fontSize:10, color:'#e8edf2', background:'transparent', cursor:'pointer', letterSpacing:'0.15em', transition:'border-color 0.3s, color 0.3s', willChange: 'transform' }}
+            onMouseEnter={e => {
+              e.currentTarget.style.borderColor = '#ff3366'
+              e.currentTarget.style.color = '#ff3366'
+              gsap.to(e.currentTarget, { scale: 1.05, duration: 0.3, ease: 'power2.out' })
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'
+              e.currentTarget.style.color = '#e8edf2'
+              gsap.to(e.currentTarget, { scale: 1, duration: 0.3, ease: 'power2.out' })
+            }}
           >
             ✕ &nbsp; Close
           </button>
         </div>
       </nav>
 
-      {/* ── Body ──────────────────────────────────────────────────────────── */}
       <div style={{ position:'relative', zIndex:5, display:'flex', flex:1, overflow:'hidden' }}>
 
-        {/* Left — project list ─────────────────────────────────────────── */}
         <div
           style={{
             width:       '42%',
             padding:     '40px 44px',
             overflowY:   'auto',
-            borderRight: '1px solid rgba(255,255,255,0.05)',
+            borderRight: '1px solid rgba(255,255,255,0.1)',
             flexShrink:  0,
           }}
         >
-          <p style={{ fontFamily:"'Space Mono', monospace", fontSize:9, letterSpacing:'0.35em', color:`${ACCENT}66`, textTransform:'uppercase', margin:'0 0 24px' }}>
+          <p style={{ fontFamily:"'Space Mono', monospace", fontSize:9, letterSpacing:'0.35em', color:'#00aaff', textTransform:'uppercase', margin:'0 0 24px' }}>
             // 0{PROJECTS.length} projects
           </p>
 
@@ -264,36 +253,35 @@ const WorksPage = ({ open, onClose }) => {
               }}
             >
               <div style={{ display:'flex', alignItems:'center', gap:16 }}>
-                <span style={{ fontSize:14, color: hoveredId === p.id ? p.color : `${p.color}66`, transition:'color 0.3s', width:20, textAlign:'center', flexShrink:0 }}>
+                <span style={{ fontSize:14, color: hoveredId === p.id ? '#00aaff' : 'rgba(255,255,255,0.3)', transition:'color 0.3s', width:20, textAlign:'center', flexShrink:0 }}>
                   {p.icon}
                 </span>
                 <div>
-                  <div style={{ fontFamily:"'Black Ops One', cursive", fontSize: hoveredId === p.id ? 20 : 16, color: hoveredId === p.id ? '#e8edf2' : 'rgba(255,255,255,0.4)', letterSpacing:'0.04em', textTransform:'uppercase', transition:'font-size 0.3s, color 0.3s', lineHeight:1.2 }}>
+                  <div style={{ fontFamily:"'Black Ops One', cursive", fontSize: hoveredId === p.id ? 20 : 16, color: hoveredId === p.id ? '#e8edf2' : 'rgba(255,255,255,0.6)', letterSpacing:'0.04em', textTransform:'uppercase', transition:'font-size 0.3s, color 0.3s', lineHeight:1.2 }}>
                     {p.title}
                   </div>
                   <div style={{ display:'flex', gap:6, marginTop: hoveredId === p.id ? 6 : 0, maxHeight: hoveredId === p.id ? 30 : 0, overflow:'hidden', transition:'max-height 0.3s ease, margin-top 0.3s ease' }}>
-                    <span style={{ fontFamily:"'Space Mono', monospace", fontSize:8, letterSpacing:'0.2em', color:`${p.color}99`, textTransform:'uppercase' }}>{p.category}</span>
+                    <span style={{ fontFamily:"'Space Mono', monospace", fontSize:8, letterSpacing:'0.2em', color:'#00aaff', textTransform:'uppercase' }}>{p.category}</span>
                     {p.tags.map(tag => (
-                      <span key={tag} style={{ fontFamily:"'Space Mono', monospace", fontSize:8, padding:'2px 7px', border:`1px solid ${p.color}44`, borderRadius:99, color:`${p.color}99`, letterSpacing:'0.1em', textTransform:'uppercase' }}>{tag}</span>
+                      <span key={tag} style={{ fontFamily:"'Space Mono', monospace", fontSize:8, padding:'2px 7px', border:`1px solid #00aaff`, borderRadius:99, color:'#00aaff', letterSpacing:'0.1em', textTransform:'uppercase' }}>{tag}</span>
                     ))}
                   </div>
                 </div>
               </div>
 
               <div style={{ display:'flex', alignItems:'center', gap:12, flexShrink:0 }}>
-                <span style={{ fontFamily:"'Space Mono', monospace", fontSize:10, color:'rgba(255,255,255,0.2)', letterSpacing:'0.1em' }}>{p.year}</span>
-                <span style={{ fontFamily:"'Space Mono', monospace", fontSize:12, color: hoveredId === p.id ? p.color : 'rgba(255,255,255,0.1)', transition:'color 0.3s', display:'inline-block' }}>→</span>
+                <span style={{ fontFamily:"'Space Mono', monospace", fontSize:10, color:'rgba(255,255,255,0.4)', letterSpacing:'0.1em' }}>{p.year}</span>
+                <span style={{ fontFamily:"'Space Mono', monospace", fontSize:12, color: hoveredId === p.id ? '#ff3366' : 'rgba(255,255,255,0.2)', transition:'color 0.3s', display:'inline-block' }}>→</span>
               </div>
             </div>
           ))}
 
           <div style={{ marginTop:40, display:'flex', alignItems:'center', gap:12 }}>
-            <div style={{ width:32, height:1, background:`linear-gradient(90deg, ${ACCENT}, transparent)` }} />
-            <span style={{ fontFamily:"'Space Mono', monospace", fontSize:8, letterSpacing:'0.3em', color:'rgba(255,255,255,0.15)', textTransform:'uppercase' }}>End of list</span>
+            <div style={{ width:32, height:1, background:`linear-gradient(90deg, #00aaff, transparent)` }} />
+            <span style={{ fontFamily:"'Space Mono', monospace", fontSize:8, letterSpacing:'0.3em', color:'rgba(255,255,255,0.3)', textTransform:'uppercase' }}>End of list</span>
           </div>
         </div>
 
-        {/* ── Right — static perspective fan ───────────────────────────── */}
         <div
           style={{
             flex:              1,
@@ -305,7 +293,6 @@ const WorksPage = ({ open, onClose }) => {
             position:          'relative',
           }}
         >
-          {/* Ambient glow — colour follows hovered project */}
           <div style={{
             position:      'absolute',
             width:         600,
@@ -322,7 +309,6 @@ const WorksPage = ({ open, onClose }) => {
             transform:     'translateX(-50%)',
           }} />
 
-          {/* Card fan */}
           <div style={{
             position:       'relative',
             width:          340,
@@ -354,15 +340,15 @@ const WorksPage = ({ open, onClose }) => {
                       scale(${isActive ? f.scale * 1.08 : f.scale})
                     `,
                     transition: 'transform 0.45s cubic-bezier(0.23,1,0.32,1), box-shadow 0.4s ease, border-color 0.4s ease',
-                    border:     `1px solid ${isActive ? p.color : 'rgba(255,255,255,0.07)'}`,
+                    border:     `1px solid ${isActive ? '#00aaff' : 'rgba(255,255,255,0.1)'}`, 
                     boxShadow:  isActive
-                      ? `0 0 40px ${p.color}44, 0 40px 80px rgba(0,0,0,0.8)`
-                      : '0 20px 60px rgba(0,0,0,0.6)',
+                      ? `0 20px 60px rgba(0,0,0,0.15)`
+                      : '0 10px 40px rgba(0,0,0,0.05)',
                     cursor:     'pointer',
                     zIndex:     isActive ? 10 : i,
+                    background: '#0a0a0a'
                   }}
                 >
-                  {/* Full-bleed image */}
                   <img
                     src={p.image}
                     alt={p.title}
@@ -370,20 +356,19 @@ const WorksPage = ({ open, onClose }) => {
                       width:      '100%',
                       height:     '100%',
                       objectFit:  'cover',
-                      opacity:    isActive ? 1 : 0.45,
-                      filter:     isActive ? 'none' : 'brightness(0.6)',
+                      opacity:    isActive ? 1 : 0.8,
+                      filter:     isActive ? 'none' : 'brightness(0.9) grayscale(20%)',
                       transition: 'opacity 0.4s ease, filter 0.4s ease',
                     }}
                   />
 
-                  {/* Bottom info overlay — hover only */}
                   <div style={{
                     position:   'absolute',
                     bottom:     0,
                     left:       0,
                     right:      0,
                     padding:    '28px 22px',
-                    background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 100%)',
+                    background: 'linear-gradient(to top, rgba(10,15,25,0.95) 0%, rgba(10,15,25,0) 100%)', // Dark gradient
                     opacity:    isActive ? 1 : 0,
                     transform:  isActive ? 'translateY(0)' : 'translateY(12px)',
                     transition: 'opacity 0.4s ease, transform 0.4s ease',
@@ -391,7 +376,7 @@ const WorksPage = ({ open, onClose }) => {
                     <p style={{
                       fontFamily:    "'Space Mono', monospace",
                       fontSize:      9,
-                      color:         p.color,
+                      color:         '#00aaff', 
                       letterSpacing: '0.25em',
                       textTransform: 'uppercase',
                       margin:        '0 0 6px',
@@ -401,7 +386,7 @@ const WorksPage = ({ open, onClose }) => {
                     <h3 style={{
                       fontFamily:    "'Black Ops One', cursive",
                       fontSize:      20,
-                      color:         '#e8edf2',
+                      color:         '#e8edf2', 
                       textTransform: 'uppercase',
                       letterSpacing: '0.04em',
                       margin:        '0 0 10px',
@@ -414,9 +399,10 @@ const WorksPage = ({ open, onClose }) => {
                           fontFamily:    "'Space Mono', monospace",
                           fontSize:      8,
                           padding:       '3px 9px',
-                          border:        `1px solid ${p.color}55`,
+                          border:        `1px solid #00aaff`, 
                           borderRadius:  99,
-                          color:         p.color,
+                          color:         '#0a0a0a', 
+                          background:    '#00aaff', 
                           letterSpacing: '0.1em',
                         }}>
                           {t}
@@ -425,20 +411,18 @@ const WorksPage = ({ open, onClose }) => {
                     </div>
                   </div>
 
-                  {/* Neon corner accent */}
                   <div style={{
                     position:    'absolute',
                     top:         14,
                     right:       14,
                     width:       20,
                     height:      20,
-                    borderTop:   `1.5px solid ${p.color}`,
-                    borderRight: `1.5px solid ${p.color}`,
+                    borderTop:   `1.5px solid #ff3366`, 
+                    borderRight: `1.5px solid #ff3366`, 
                     opacity:     isActive ? 1 : 0.3,
                     transition:  'opacity 0.4s ease',
                   }} />
 
-                  {/* Top-left index */}
                   <div style={{
                     position:      'absolute',
                     top:           14,
@@ -446,7 +430,7 @@ const WorksPage = ({ open, onClose }) => {
                     fontFamily:    "'Space Mono', monospace",
                     fontSize:      9,
                     letterSpacing: '0.3em',
-                    color:         isActive ? p.color : 'rgba(255,255,255,0.2)',
+                    color:         isActive ? '#00aaff' : 'rgba(255,255,255,0.4)', 
                     textTransform: 'uppercase',
                     transition:    'color 0.35s ease',
                   }}>
@@ -457,7 +441,7 @@ const WorksPage = ({ open, onClose }) => {
             })}
           </div>
 
-          {/* Hint label */}
+          {/* Hover hint */}
           <div style={{
             position:      'absolute',
             bottom:        32,
@@ -466,20 +450,25 @@ const WorksPage = ({ open, onClose }) => {
             fontFamily:    "'Space Mono', monospace",
             fontSize:      9,
             letterSpacing: '0.3em',
-            color:         'rgba(255,255,255,0.15)',
+            color:         'rgba(255,255,255,0.4)',
             textTransform: 'uppercase',
             whiteSpace:    'nowrap',
             pointerEvents: 'none',
           }}>
             Hover to explore
           </div>
-        </div>
-      </div>
+        </div>{/* end right panel */}
+      </div>{/* end flex row */}
 
-      {/* ── Project Details Overlay ─────────────────────────────────────── */}
-      <ProjectDetails project={selectedProject} onClose={() => setSelectedProject(null)} />
-    </div>
+      {selectedProject && (
+        <ProjectDetails
+          project={selectedProject}
+          onClose={() => setSelectedProject(null)}
+        />
+      )}
+    </div>,
+    document.body
   )
 }
 
-export default WorksPage
+export default React.memo(WorksPage)
