@@ -115,10 +115,10 @@ const Navbar = () => {
         }}
       >
         <div 
+          className="hidden md:flex"
           onClick={() => scrollToSection('hero')}
           style={{ 
             cursor: 'pointer',
-            display: 'flex',
             alignItems: 'center'
           }}
         >
@@ -135,7 +135,7 @@ const Navbar = () => {
         </div>
 
         {/* Desktop Links */}
-        <div style={{ display: 'flex', gap: 32 }} className="hidden md:flex">
+        <div style={{ gap: 32 }} className="hidden md:flex">
           {NAV_LINKS.map(link => (
             <span
               key={link.id}

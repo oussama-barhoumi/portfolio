@@ -11,7 +11,7 @@ import TreeSection from './components/TreeSection'
 import WorksSection from './components/WorksSection'
 import TechBubbles from './components/TechBubbles'
 import GlobalBackground from './components/GlobalBackground'
-import ContactSection from './components/ContactSection'
+
 
 const TokyoHero = React.lazy(() => import('./components/TokyoHero'))
 
@@ -66,7 +66,6 @@ const App = () => {
         <Suspense fallback={null}>
           <TokyoHero />
         </Suspense>
-        <ContactSection />
       </main>
     </>
   )

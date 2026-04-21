@@ -34,7 +34,7 @@ const lerp = THREE.MathUtils.lerp
 class SceneErrorBoundary extends Component {
   state = { error: null }
   static getDerivedStateFromError(error) { return { error } }
-  componentDidCatch(err) {}
+  componentDidCatch(err) { }
   render() { return this.state.error ? null : this.props.children }
 }
 
@@ -140,13 +140,15 @@ const Doll = ({ progress, onBurst }) => {
     materials.forEach(m => m.emissive.lerp(targetEmissive, 0.06))
     hoverScale.current = lerp(hoverScale.current, isHovered.current ? 1.1 : 1.0, 0.08)
 
+    const baseScale = window.innerWidth <= 430 ? 1.0 : (window.innerWidth <= 768 ? 1.4 : 1.8)
+
     if (r <= 0.30) {
       groupRef.current.position.set(
         smoothPos.current.x + idleBobX,
         smoothPos.current.y + idleBobY,
         2
       )
-      groupRef.current.scale.setScalar(normalScale * 1.8 * hoverScale.current)
+      groupRef.current.scale.setScalar(normalScale * baseScale * hoverScale.current)
 
       materials.forEach(m => { m.opacity = 1 })
 
@@ -156,7 +158,7 @@ const Doll = ({ progress, onBurst }) => {
         lerp(smoothPos.current.y + idleBobY, 0, smoothstep((r - 0.30) / 0.22)),
         2
       )
-      groupRef.current.scale.setScalar(normalScale * 1.8 * hoverScale.current)
+      groupRef.current.scale.setScalar(normalScale * baseScale * hoverScale.current)
 
       pivotRef.current.rotation.set(
         lerp(pivotRef.current.rotation.x, 0, 0.05),

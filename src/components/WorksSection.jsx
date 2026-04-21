@@ -1,9 +1,9 @@
 import React, { useRef, useEffect, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useNavigate } from 'react-router-dom'
 import logoUrl from '../constant/logopro.png'
 import GlitchText from './GlitchText'
-import WorksPage from './WorksPage'
 import ProjectDetails from './ProjectDetails'
 import { ACCENT, BRIGHT, MID, BG } from '../constant/theme'
 
@@ -73,7 +73,7 @@ const PROJECTS = [
 ]
 
 const WorksSection = () => {
-  const [worksOpen, setWorksOpen] = useState(false)
+  const navigate = useNavigate()
   const [selectedProject, setSelectedProject] = useState(null)
   const sectionRef = useRef(null)
   const trackRef = useRef(null)
@@ -125,22 +125,22 @@ const WorksSection = () => {
         ease: 'power3.inOut',
       }, 1.0)
 
-      const spacing = window.innerWidth * 0.42
-      const startX = -(PROJECTS.length - 1) * spacing / 2
+      const isMobile = window.innerWidth <= 768
+      const spacingVw = isMobile ? 90 : 42
 
       cardRefs.current.forEach((card, i) => {
         tl.to(card, {
-          x: startX + i * spacing,
+          x: `${i * spacingVw}vw`,
           y: 0,
           rotate: 0,
-          width: '38vw',
-          minWidth: 420,
+          width: isMobile ? '85vw' : '38vw',
+          minWidth: isMobile ? 260 : 420,
           height: '72vh',
           maxHeight: 680,
           top: '50%',
           left: '50%',
-          marginLeft: '-19vw',
-          marginTop: '-36vh',
+          xPercent: -50,
+          yPercent: -50,
           scale: 1,
           duration: 1.4,
           ease: 'expo.inOut',
@@ -150,10 +150,13 @@ const WorksSection = () => {
       })
 
       tl.to(trackRef.current, {
-        x: -(PROJECTS.length - 1) * spacing,
+        x: `-${(PROJECTS.length - 1) * spacingVw}vw`,
         duration: 2,
         ease: 'none',
       }, 2.5)
+
+      // Dummy buffer at the end of the timeline
+      tl.to({}, { duration: 0.2 })
 
     }, sectionRef)
 
@@ -164,11 +167,9 @@ const WorksSection = () => {
     position: 'absolute',
     top: '50%',
     left: '50%',
-    marginLeft: -90,
-    marginTop: -60,
     width: 180,
     height: 120,
-    transform: `rotate(${(i - 2) * 6}deg) translateY(${i * -4}px)`,
+    transform: `translate(-50%, -50%) rotate(${(i - 2) * 6}deg) translateY(${i * -4}px)`,
     borderRadius: 16,
     overflow: 'hidden',
     background: '#080c12',
@@ -185,7 +186,7 @@ const WorksSection = () => {
           position: 'relative',
           width: '100%',
           height: '100vh',
-          background: '#0a0a0a', 
+          background: '#0a0a0a',
           overflow: 'hidden',
           display: 'flex',
           alignItems: 'center',
@@ -224,7 +225,7 @@ const WorksSection = () => {
             style={{
               width: 40,
               height: 1,
-              background: `linear-gradient(90deg, transparent, #00aaff, transparent)`, 
+              background: `linear-gradient(90deg, transparent, #00aaff, transparent)`,
               marginBottom: 4,
             }}
           />
@@ -233,7 +234,7 @@ const WorksSection = () => {
               fontFamily: "'Space Mono', monospace",
               fontSize: 9,
               letterSpacing: '0.35em',
-              color: '#00aaff', 
+              color: '#00aaff',
               textTransform: 'uppercase',
               margin: 0,
             }}
@@ -274,8 +275,8 @@ const WorksSection = () => {
                   left: 0,
                   width: '38%',
                   height: 28,
-                  background: 'linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%)',
-                  border: '1.5px solid #00aaff', 
+                  background: 'linear-gradient(135deg, #1a1a1a 0%, #050505 100%)',
+                  border: '1.5px solid #00aaff',
                   borderBottom: 'none',
                   borderRadius: '8px 8px 0 0',
                 }}
@@ -286,8 +287,8 @@ const WorksSection = () => {
                   bottom: 0,
                   width: '100%',
                   height: '88%',
-                  background: 'linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%)',
-                  border: '1.5px solid #00aaff', 
+                  background: 'linear-gradient(135deg, #1a1a1a 0%, #050505 100%)',
+                  border: '1.5px solid #00aaff',
                   borderRadius: '4px 16px 16px 16px',
                 }}
               />
@@ -301,8 +302,8 @@ const WorksSection = () => {
                   bottom: '87%',
                   width: '100%',
                   height: '88%',
-                  background: 'linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%)',
-                  border: '1.5px solid #00aaff', 
+                  background: 'linear-gradient(135deg, #151515 0%, #050505 100%)',
+                  border: '1.5px solid #00aaff',
                   borderRadius: '4px 16px 16px 16px',
                   transformOrigin: 'bottom center',
                   transform: 'rotateX(-15deg)',
@@ -331,7 +332,7 @@ const WorksSection = () => {
             <div
               key={p.id}
               ref={el => cardRefs.current[i] = el}
-              onClick={() => setSelectedProject(p)}
+              onClick={() => navigate('/works')}
               onMouseEnter={() => {
                 gsap.to(imgRefs.current[i], { scale: 1.06, opacity: 1, duration: 0.5, ease: 'power2.out' })
                 gsap.to(glowRefs.current[i], { opacity: 1, duration: 0.4 })
@@ -397,7 +398,7 @@ const WorksSection = () => {
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    padding: '36px 32px',
+                    padding: 'clamp(20px, 6vw, 36px) clamp(20px, 5vw, 32px)',
                   }}
                 >
                   <p
@@ -415,7 +416,7 @@ const WorksSection = () => {
                   <h3
                     style={{
                       fontFamily: "'Black Ops One', cursive",
-                      fontSize: 'clamp(18px,2vw,28px)',
+                      fontSize: 'clamp(16px, 5vw, 28px)',
                       color: '#0a0a0a', // Keep bright reading against dark image gradient
                       letterSpacing: '0.04em',
                       textTransform: 'uppercase',
@@ -498,7 +499,7 @@ const WorksSection = () => {
               fontSize: 9,
               textTransform: 'uppercase',
               letterSpacing: '0.3em',
-              color: '#00aaff', 
+              color: '#00aaff',
             }}
           >
             Portfolio 2025
@@ -514,7 +515,7 @@ const WorksSection = () => {
             transform: 'translateY(-50%)',
             width: 1,
             height: '45vh',
-            background: 'rgba(0,170,255,0.12)', 
+            background: 'rgba(0,170,255,0.12)',
             zIndex: 10,
           }}
         >
@@ -522,19 +523,19 @@ const WorksSection = () => {
             style={{
               width: '100%',
               height: '30%',
-              background: '#ff3366', 
+              background: '#ff3366',
             }}
           />
         </div>
 
         <div
-          onClick={() => setWorksOpen(true)}
+          onClick={() => navigate('/works')}
           onMouseEnter={e => {
             gsap.to(e.currentTarget, {
               scale: 1.05,
               y: -5,
               boxShadow: `0 15px 30px rgba(0,0,0,0.15)`,
-              borderColor: '#00aaff', 
+              borderColor: '#00aaff',
               duration: 0.4,
               ease: 'back.out(1.5)'
             })
@@ -558,7 +559,7 @@ const WorksSection = () => {
             transform: 'translateX(-50%)',
             width: 280,
             height: 75,
-            background: '#0a0a0a', 
+            background: '#0a0a0a',
             border: '1px solid rgba(255,255,255,0.15)',
             borderRadius: 12,
             cursor: 'pointer',
@@ -574,24 +575,24 @@ const WorksSection = () => {
         >
 
           <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', gap: 4, pointerEvents: 'none' }}>
-             <span style={{
-               fontFamily: "'Space Mono', monospace",
-               fontSize: 9,
-               letterSpacing: '0.2em',
-               color: '#00aaff', 
-               textTransform: 'uppercase'
-             }}>
+            <span style={{
+              fontFamily: "'Space Mono', monospace",
+              fontSize: 9,
+              letterSpacing: '0.2em',
+              color: '#00aaff',
+              textTransform: 'uppercase'
+            }}>
                // view all
-             </span>
-             <span style={{
-               fontFamily: "'Black Ops One', cursive",
-               fontSize: 18,
-               color: '#e8edf2', 
-               letterSpacing: '0.04em',
-               textTransform: 'uppercase',
-             }}>
-               Explore More
-             </span>
+            </span>
+            <span style={{
+              fontFamily: "'Black Ops One', cursive",
+              fontSize: 18,
+              color: '#e8edf2',
+              letterSpacing: '0.04em',
+              textTransform: 'uppercase',
+            }}>
+              Explore More
+            </span>
           </div>
 
           <div
@@ -602,11 +603,11 @@ const WorksSection = () => {
               width: 36,
               height: 36,
               borderRadius: '50%',
-              border: `1px solid #00aaff`, 
+              border: `1px solid #00aaff`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#00aaff', 
+              color: '#00aaff',
               fontSize: 16,
               transition: 'background-color 0.3s, border-color 0.3s, color 0.3s',
             }}
@@ -621,8 +622,8 @@ const WorksSection = () => {
               right: 0,
               width: 16,
               height: 16,
-              borderTop: `1.5px solid #ff3366`, 
-              borderRight: `1.5px solid #ff3366`, 
+              borderTop: `1.5px solid #ff3366`,
+              borderRight: `1.5px solid #ff3366`,
               borderTopRightRadius: 10,
               opacity: 1,
             }}
@@ -630,8 +631,6 @@ const WorksSection = () => {
         </div>
 
       </section>
-
-      <WorksPage open={worksOpen} onClose={() => setWorksOpen(false)} />
 
       <ProjectDetails project={selectedProject} onClose={() => setSelectedProject(null)} />
     </>
