@@ -163,7 +163,7 @@ const TextRevealSection = () => {
         <div className="w-5 h-px" style={{ background: '#00aaff' }} /> {/* STEEL */}
         <span
           className="text-[9px] uppercase tracking-[0.35em]"
-          style={{ fontFamily: "'Space Mono', monospace", color: '#00aaff' }}
+          style={{ fontFamily: "'Matemasie', sans-serif", color: '#00aaff' }}
         >
           Identity
         </span>
@@ -175,7 +175,7 @@ const TextRevealSection = () => {
       >
         <span
           className="text-[9px] uppercase tracking-[0.3em]"
-          style={{ fontFamily: "'Space Mono', monospace", color: '#00aaff' }}
+          style={{ fontFamily: "'Matemasie', sans-serif", color: '#00aaff' }}
         >
           Portfolio 2025
         </span>
@@ -199,7 +199,7 @@ const TextRevealSection = () => {
               <span
                 className="absolute left-0 hidden md:block text-xs tracking-widest"
                 style={{
-                  fontFamily: "'Space Mono', monospace",
+                  fontFamily: "'Matemasie', sans-serif",
                   top: '50%',
                   transform: 'translateY(-50%)',
                   color: 'rgba(0,170,255,0.6)', 
@@ -212,7 +212,7 @@ const TextRevealSection = () => {
             <span
               className="block text-center font-black uppercase"
               style={{
-                fontFamily: "'Black Ops One', cursive",
+                fontFamily: "'Matemasie', sans-serif",
                 fontSize: line.size,
                 letterSpacing: line.spacing,
                 lineHeight: 1,
@@ -254,7 +254,7 @@ const TextRevealSection = () => {
       >
         <span
           className="text-[8px] uppercase tracking-[0.35em]"
-          style={{ fontFamily: "'Space Mono', monospace", color: '#00aaff' }} 
+          style={{ fontFamily: "'Matemasie', sans-serif", color: '#00aaff' }} 
         >
           Scroll
         </span>

@@ -6,6 +6,7 @@ import logoUrl from '../constant/logopro.png'
 import GlitchText from './GlitchText'
 import ProjectDetails from './ProjectDetails'
 import { ACCENT, BRIGHT, MID, BG } from '../constant/theme'
+import BlobGhostButton from './button'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -231,7 +232,7 @@ const WorksSection = () => {
           />
           <p
             style={{
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Matemasie', sans-serif",
               fontSize: 9,
               letterSpacing: '0.35em',
               color: '#00aaff',
@@ -403,7 +404,7 @@ const WorksSection = () => {
                 >
                   <p
                     style={{
-                      fontFamily: "'Space Mono', monospace",
+                      fontFamily: "'Matemasie', sans-serif",
                       fontSize: 9,
                       letterSpacing: '0.3em',
                       color: p.color,
@@ -415,7 +416,7 @@ const WorksSection = () => {
                   </p>
                   <h3
                     style={{
-                      fontFamily: "'Black Ops One', cursive",
+                      fontFamily: "'Matemasie', sans-serif",
                       fontSize: 'clamp(16px, 5vw, 28px)',
                       color: '#0a0a0a', // Keep bright reading against dark image gradient
                       letterSpacing: '0.04em',
@@ -431,7 +432,7 @@ const WorksSection = () => {
                       <span
                         key={tag}
                         style={{
-                          fontFamily: "'Space Mono', monospace",
+                          fontFamily: "'Matemasie', sans-serif",
                           fontSize: 9,
                           padding: '5px 12px',
                           border: `1.5px solid ${p.color}`,
@@ -465,7 +466,7 @@ const WorksSection = () => {
                     position: 'absolute',
                     top: 20,
                     left: 24,
-                    fontFamily: "'Space Mono', monospace",
+                    fontFamily: "'Matemasie', sans-serif",
                     fontSize: 9,
                     letterSpacing: '0.3em',
                     color: '#ffffff',
@@ -495,7 +496,7 @@ const WorksSection = () => {
         >
           <span
             style={{
-              fontFamily: "'Space Mono', monospace",
+              fontFamily: "'Matemasie', sans-serif",
               fontSize: 9,
               textTransform: 'uppercase',
               letterSpacing: '0.3em',
@@ -528,106 +529,17 @@ const WorksSection = () => {
           />
         </div>
 
-        <div
-          onClick={() => navigate('/works')}
-          onMouseEnter={e => {
-            gsap.to(e.currentTarget, {
-              scale: 1.05,
-              y: -5,
-              boxShadow: `0 15px 30px rgba(0,0,0,0.15)`,
-              borderColor: '#00aaff',
-              duration: 0.4,
-              ease: 'back.out(1.5)'
-            })
-            gsap.to(e.currentTarget.querySelector('.arrow'), { x: 5, backgroundColor: '#ff3366', borderColor: '#ff3366', color: '#0a0a0a', duration: 0.3 })
-          }}
-          onMouseLeave={e => {
-            gsap.to(e.currentTarget, {
-              scale: 1,
-              y: 0,
-              boxShadow: `0 10px 20px rgba(0,0,0,0.05)`,
-              borderColor: 'rgba(255,255,255,0.15)',
-              duration: 0.4,
-              ease: 'power2.out'
-            })
-            gsap.to(e.currentTarget.querySelector('.arrow'), { x: 0, backgroundColor: 'transparent', borderColor: '#00aaff', color: '#00aaff', duration: 0.3 })
-          }}
-          style={{
-            position: 'absolute',
-            bottom: 40,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: 280,
-            height: 75,
-            background: '#0a0a0a',
-            border: '1px solid rgba(255,255,255,0.15)',
-            borderRadius: 12,
-            cursor: 'pointer',
-            zIndex: 100,
-            pointerEvents: 'auto',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '0 24px',
-            overflow: 'hidden',
-            boxShadow: '0 10px 20px rgba(0,0,0,0.05)',
-          }}
-        >
-
-          <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', gap: 4, pointerEvents: 'none' }}>
-            <span style={{
-              fontFamily: "'Space Mono', monospace",
-              fontSize: 9,
-              letterSpacing: '0.2em',
-              color: '#00aaff',
-              textTransform: 'uppercase'
-            }}>
-               // view all
-            </span>
-            <span style={{
-              fontFamily: "'Black Ops One', cursive",
-              fontSize: 18,
-              color: '#e8edf2',
-              letterSpacing: '0.04em',
-              textTransform: 'uppercase',
-            }}>
-              Explore More
-            </span>
-          </div>
-
-          <div
-            className="arrow"
-            style={{
-              position: 'relative',
-              zIndex: 1,
-              width: 36,
-              height: 36,
-              borderRadius: '50%',
-              border: `1px solid #00aaff`,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#00aaff',
-              fontSize: 16,
-              transition: 'background-color 0.3s, border-color 0.3s, color 0.3s',
-            }}
-          >
-            →
-          </div>
-
-          <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              width: 16,
-              height: 16,
-              borderTop: `1.5px solid #ff3366`,
-              borderRight: `1.5px solid #ff3366`,
-              borderTopRightRadius: 10,
-              opacity: 1,
-            }}
-          />
+        <div style={{
+          position: 'absolute',
+          bottom: 40,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 100,
+          pointerEvents: 'auto',
+        }}>
+          <BlobGhostButton size="lg" onClick={() => navigate('/works')}>
+            Explore More →
+          </BlobGhostButton>
         </div>
 
       </section>

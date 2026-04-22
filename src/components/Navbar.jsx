@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import gsap from 'gsap'
 
 import logoUrl from '../constant/logopro.png'
+import BlobGhostButton from './button'
 
 const NAV_LINKS = [
   { label: 'Home', id: 'hero' },
@@ -84,7 +85,7 @@ const Navbar = () => {
   // Common UI styles
   const styles = {
     navLink: (isActive) => ({
-      fontFamily: "'Space Mono', monospace",
+      fontFamily: "'Matemasie', sans-serif",
       fontSize: 11,
       color: isActive ? '#00aaff' : 'rgba(232,237,242,0.6)',
       textTransform: 'uppercase',
@@ -154,15 +155,11 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Hamburger Button */}
-        <button
-          className="md:hidden flex flex-col justify-center gap-[5px] bg-transparent border-none cursor-pointer"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          style={{ zIndex: 501 }}
-        >
-          <div style={{ width: 24, height: 2, background: '#e8edf2', transition: 'all 0.3s', transform: mobileMenuOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none' }} />
-          <div style={{ width: 24, height: 2, background: '#e8edf2', transition: 'all 0.3s', opacity: mobileMenuOpen ? 0 : 1 }} />
-          <div style={{ width: 24, height: 2, background: '#e8edf2', transition: 'all 0.3s', transform: mobileMenuOpen ? 'rotate(-45deg) translate(5px, -5px)' : 'none' }} />
-        </button>
+        <div className="md:hidden" style={{ zIndex: 501 }}>
+          <BlobGhostButton size="sm" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+            {mobileMenuOpen ? 'CLOSE' : 'MENU'}
+          </BlobGhostButton>
+        </div>
       </nav>
 
       {/* Mobile Menu Dropdown */}

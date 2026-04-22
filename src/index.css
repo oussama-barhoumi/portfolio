@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syne:wght@600;700;800&family=Space+Mono:wght@400;700&family=Black+Ops+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Matemasie&display=swap');
 @import "tailwindcss";
 
 /* ─── Design Tokens ─────────────────────────────────────────────────────────── */
@@ -17,8 +17,8 @@
   --text-secondary: #94a3b8;
   --accent-glow:    rgba(42, 104, 153, 0.5);
 
-  --font-inter: 'Inter', sans-serif;
-  --font-syne:  'Syne', sans-serif;
+  --font-inter: 'Matemasie', sans-serif;
+  --font-syne:  'Matemasie', sans-serif;
 }
 
 /* ─── Reset ─────────────────────────────────────────────────────────────────── */

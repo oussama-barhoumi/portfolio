@@ -116,7 +116,7 @@ function LogoCard({ tech }) {
         />
       ) : (
         <span style={{
-          fontFamily:    "'Space Mono', monospace",
+          fontFamily:    "'Matemasie', sans-serif",
           fontSize:      10, fontWeight: 700,
           letterSpacing: '0.15em', color: tech.color,
           position:      'relative', zIndex: 1,
@@ -129,7 +129,7 @@ function LogoCard({ tech }) {
 
       {/* Name */}
       <span style={{
-        fontFamily:    "'Space Mono', monospace",
+        fontFamily:    "'Matemasie', sans-serif",
         fontSize:      8, letterSpacing: '0.22em',
         color:         'rgba(232,237,242,0.5)',
         textTransform: 'uppercase', whiteSpace: 'nowrap',
@@ -248,14 +248,14 @@ const TechBubbles = () => {
       {/* ── Heading (always visible, not part of reveal) ─────────────────── */}
       <div style={{ textAlign: 'center', marginBottom: 56, padding: '0 24px' }}>
         <p style={{
-          fontFamily:    "'Space Mono', monospace",
+          fontFamily:    "'Matemasie', sans-serif",
           fontSize:      10, letterSpacing: '0.42em',
           color:         '#00aaff', textTransform: 'uppercase', marginBottom: 14,
         }}>
           // expertise / stack
         </p>
         <h2 style={{
-          fontFamily:    "'Black Ops One', cursive",
+          fontFamily:    "'Matemasie', sans-serif",
           fontSize:      'clamp(26px,4vw,56px)',
           color:         '#e8edf2', textTransform: 'uppercase',
           letterSpacing: '0.03em', lineHeight: 1.08,
@@ -281,7 +281,7 @@ const TechBubbles = () => {
             >
               <div style={{ width: 24, height: 1, background: row.accentColor }} />
               <span style={{
-                fontFamily:    "'Space Mono', monospace",
+                fontFamily:    "'Matemasie', sans-serif",
                 fontSize:      9, letterSpacing: '0.35em',
                 color:         row.accentColor, textTransform: 'uppercase',
               }}>

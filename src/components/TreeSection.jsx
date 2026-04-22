@@ -505,11 +505,11 @@ function MobileBottomPanel({ hoveredNode, setHoveredNode, activeIndex, setActive
           </h3>
 
           {/* Divider */}
-          <div className="w-9 h-px mb-4" style={{ background: 'linear-gradient(to right, #c9a96e, transparent)' }} />
+          <div className="w-10 h-px mb-5" style={{ background: 'linear-gradient(to right, #c9a96e, transparent)' }} />
 
           {/* Description */}
           <p
-            className="font-['Noto_Serif_JP'] text-[0.80rem] leading-[1.9] tracking-[0.07em]"
+            className="font-['Noto_Serif_JP'] text-[1.0rem] leading-[1.9] tracking-[0.07em]"
             style={{ color: 'rgba(240,232,221,0.82)' }}
           >
             {activeObj.desc}
@@ -517,18 +517,17 @@ function MobileBottomPanel({ hoveredNode, setHoveredNode, activeIndex, setActive
         </div>
       </div>
 
-      {/* ── Swipe indicator ── */}
       <p
-        className="flex items-center gap-3 mb-6"
+        className="flex items-center justify-center m-6"
         style={{
           fontSize: '0.6rem',
           letterSpacing: '0.25em',
           textTransform: 'uppercase',
           color: 'rgba(201,169,110,0.55)',
-          fontFamily: 'monospace'
+          fontFamily: "'Matemasie', sans-serif"
         }}
       >
-        <span style={{ display: 'inline-block', width: 28, height: 1, background: 'linear-gradient(to right, transparent, rgba(201,169,110,0.5))' }} />
+        <span className='m-7' style={{ display: 'inline-block', width: 28, height: 1, background: 'linear-gradient(to right, transparent, rgba(201,169,110,0.5))' }} />
         swipe to explore
         <span style={{ display: 'inline-block', width: 28, height: 1, background: 'linear-gradient(to left, transparent, rgba(201,169,110,0.5))' }} />
       </p>

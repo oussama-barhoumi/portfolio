@@ -1,4 +1,5 @@
 import React, { useEffect, Suspense } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import gsap from 'gsap'
 import Lenis from '@studio-freight/lenis'
@@ -11,39 +12,24 @@ import TreeSection from './components/TreeSection'
 import WorksSection from './components/WorksSection'
 import TechBubbles from './components/TechBubbles'
 import GlobalBackground from './components/GlobalBackground'
-
+import WorksFullPage from './pages/works/WorksFullPage'
 
 const TokyoHero = React.lazy(() => import('./components/TokyoHero'))
 
-// Register plugins once at the top
 gsap.registerPlugin(ScrollTrigger)
 
-const App = () => {
+const HomePage = () => {
   useEffect(() => {
-    // Lenis smooth scroll setup
     const lenis = new Lenis({
       duration: 1.4,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smooth: true,
     })
-
-    const lenisRaf = (time) => {
-      lenis.raf(time * 1000)
-    }
-
+    const lenisRaf = (time) => { lenis.raf(time * 1000) }
     gsap.ticker.add(lenisRaf)
     gsap.ticker.lagSmoothing(0)
-
-    // Scroll trigger refresh
-    setTimeout(() => {
-      ScrollTrigger.refresh()
-      ScrollTrigger.sort()
-    }, 300)
-
-    return () => {
-      gsap.ticker.remove(lenisRaf)
-      lenis.destroy()
-    }
+    setTimeout(() => { ScrollTrigger.refresh(); ScrollTrigger.sort() }, 300)
+    return () => { gsap.ticker.remove(lenisRaf); lenis.destroy() }
   }, [])
 
   return (
@@ -52,23 +38,22 @@ const App = () => {
       <Navbar />
       <DotCursor />
       <main style={{ position: 'relative', zIndex: 1 }}>
-        <section id="hero">
-          <HeroScene />
-        </section>
+        <section id="hero"><HeroScene /></section>
         <TextRevealSection />
         <TreeSection />
-        <section id="works">
-          <WorksSection />
-        </section>
-        <section id="tech">
-          <TechBubbles />
-        </section>
-        <Suspense fallback={null}>
-          <TokyoHero />
-        </Suspense>
+        <section id="works"><WorksSection /></section>
+        <section id="tech"><TechBubbles /></section>
+        <Suspense fallback={null}><TokyoHero /></Suspense>
       </main>
     </>
   )
 }
+
+const App = () => (
+  <Routes>
+    <Route path="/" element={<HomePage />} />
+    <Route path="/works" element={<WorksFullPage />} />
+  </Routes>
+)
 
 export default App

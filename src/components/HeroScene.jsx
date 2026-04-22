@@ -424,7 +424,7 @@ const DollSpeechBubble = ({ progress, dollScreenPos }) => {
       }}
     >
       <p style={{
-        fontFamily: "'Space Mono', monospace",
+        fontFamily: "'Matemasie', sans-serif",
         fontSize: 13,
         lineHeight: 1.55,
         color: '#e8f6ff',
@@ -482,48 +482,21 @@ const HeroTextOverlay = ({ progress }) => {
   }, [progress])
 
   return (
-    <div ref={ref} style={{ position: 'absolute', bottom: 56, left: 48, zIndex: 10, maxWidth: 540 }}>
-      {/* We had pointerEvents: 'none' on the container, but we need the buttons to be clickable. */}
+    <div ref={ref} style={{ position: 'absolute', bottom: 100, left: 48, zIndex: 10, maxWidth: 400 }}>
+
       <div style={{ pointerEvents: 'none' }}>
-        <p style={{ fontFamily: "'Space Mono',monospace", fontSize: 10, letterSpacing: '0.22em', color: 'rgba(255,255,255,0.38)', textTransform: 'uppercase', marginBottom: 14 }}>
-          Oussama.design
+        <p style={{ fontFamily: "'Matemasie', sans-serif", fontSize: 10, letterSpacing: '0.22em', color: 'rgba(255,255,255,0.38)', textTransform: 'uppercase', marginBottom: 14 }}>
         </p>
-        <h1 style={{ fontFamily: "'Black Ops One',cursive", fontSize: 'clamp(28px,4vw,54px)', lineHeight: 1.07, textTransform: 'uppercase', letterSpacing: '0.02em', color: '#e8edf2' }}>
-          Oussama Barhoumi is a<br />
-          <span style={{ color: '#00aaff' }}>creative</span><br />
-          designer focusing<br />
-          on web experiences,<br />
-          and stuff that looks{' '}
-          <span style={{ color: '#00aaff' }}>good.</span>
+        <h1 style={{ fontFamily: "'Matemasie', sans-serif", fontSize: 'clamp(28px,4vw,54px)', lineHeight: 1.07, textTransform: 'uppercase', letterSpacing: '0.02em', color: '#e8edf2' }}>
+          Oussama <br />
+          <span style={{ color: '#00aaff' }}>creative</span>
+          <br />
+          developer
+
+          focusing on web experiences,
+
+
         </h1>
-      </div>
-
-      <div style={{ pointerEvents: 'auto', display: 'flex', gap: 16, marginTop: 32 }}>
-        <button
-          onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-          onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.05, duration: 0.3, ease: 'power2.out', background: '#e60039' })}
-          onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, duration: 0.3, ease: 'power2.out', background: '#ff3366' })}
-          style={{
-            background: '#ff3366', color: '#0a0a0a', border: 'none', padding: '14px 28px',
-            fontFamily: "'Space Mono', monospace", fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: 4, fontWeight: 'bold'
-          }}
-          data-cursor
-        >
-          Contact Me
-        </button>
-
-        <button
-          onClick={() => document.getElementById('works')?.scrollIntoView({ behavior: 'smooth' })}
-          onMouseEnter={(e) => gsap.to(e.currentTarget, { scale: 1.05, duration: 0.3, ease: 'power2.out', background: 'rgba(0,170,255,0.2)' })}
-          onMouseLeave={(e) => gsap.to(e.currentTarget, { scale: 1, duration: 0.3, ease: 'power2.out', background: 'rgba(0,170,255,0.05)' })}
-          style={{
-            background: 'rgba(0,170,255,0.05)', color: '#00aaff', border: '1px solid rgba(0,170,255,0.3)', padding: '14px 28px',
-            fontFamily: "'Space Mono', monospace", fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: 4
-          }}
-          data-cursor
-        >
-          See My Work
-        </button>
       </div>
     </div>
   )
@@ -590,8 +563,8 @@ const SceneContent = ({ progress, onBurst }) => {
 
       <Suspense fallback={null}>
         <Doll progress={progress} onBurst={onBurst} />
-        <FloatingLogo progress={progress} basePosition={[-4.5, 1.0, 0.5]} phaseOffset={4.2} onBurst={onBurst} />
-        <FloatingLogo progress={progress} basePosition={[4.5, 1.0, 0.5]} phaseOffset={0} onBurst={onBurst} />
+        <FloatingLogo progress={progress} basePosition={[-5.0, 0.7, -3]} phaseOffset={4.2} onBurst={onBurst} />
+        <FloatingLogo progress={progress} basePosition={[5.0, 0.7, -3]} phaseOffset={0} onBurst={onBurst} />
       </Suspense>
 
       <EffectComposer multisampling={0} disableNormalPass>
