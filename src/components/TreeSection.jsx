@@ -10,6 +10,12 @@ gsap.registerPlugin(ScrollTrigger)
 
 const SAKURA_URL = '/constant/sakura/scene.gltf'
 
+// ─── Sakura rose / warm gold palette ────────────────────────────────────────
+// Primary accent  : #c9a96e  (antique gold / warm amber)
+// Secondary accent: #e8b4b8  (soft sakura pink)
+// Glow highlight  : #f5c5c5  (pale blossom)
+// ─────────────────────────────────────────────────────────────────────────────
+
 const CATEGORIES = [
   {
     id: 'fullstack',
@@ -100,9 +106,10 @@ function TreeModel({ hoveredNode, isTreeInView, breakpoint, swipeRotation }) {
         mat.map?.image?.src?.includes('sakura')
       if (hoveredNode) {
         gsap.to(mat.emissive, {
-          r: isBlossom ? 0.30 : 0.12,
-          g: isBlossom ? 0.06 : 0.01,
-          b: isBlossom ? 0.10 : 0.03,
+          // warm rose glow on hover
+          r: isBlossom ? 0.35 : 0.18,
+          g: isBlossom ? 0.08 : 0.04,
+          b: isBlossom ? 0.12 : 0.04,
           duration: 0.65,
           ease: 'power2.out',
         })
@@ -188,7 +195,8 @@ function BranchHotspot({ data, hoveredNode, setHoveredNode, isTreeInView, breakp
 
       {isHovered && (
         <group ref={glowRef}>
-          <Sparkles count={isMobile ? 14 : 22} scale={isMobile ? 2.5 : 3.5} size={isMobile ? 3 : 4.5} speed={0.30} opacity={0.80} color="#ffcc00" />
+          {/* Warm sakura-pink sparkles */}
+          <Sparkles count={isMobile ? 14 : 22} scale={isMobile ? 2.5 : 3.5} size={isMobile ? 3 : 4.5} speed={0.30} opacity={0.80} color="#e8b4b8" />
         </group>
       )}
 
@@ -204,24 +212,24 @@ function BranchHotspot({ data, hoveredNode, setHoveredNode, isTreeInView, breakp
               className="absolute top-1/2 right-full h-px origin-right mr-4"
               style={{
                 width: '20vw',
-                background: 'linear-gradient(to right, transparent, #ffcc00, #ffcc00)'
+                background: 'linear-gradient(to right, transparent, #c9a96e, #c9a96e)'
               }}
             />
             <div
               className="px-6 py-3 rounded-full relative overflow-hidden flex items-center gap-3"
               style={{
-                background: 'rgba(10, 10, 20, 0.7)',
+                background: 'rgba(10, 8, 12, 0.75)',
                 backdropFilter: 'blur(16px) saturate(1.3)',
                 WebkitBackdropFilter: 'blur(16px) saturate(1.3)',
-                border: '1px solid rgba(255,204,0,0.3)',
-                boxShadow: '0 4px 24px rgba(0,0,0,0.3), 0 0 20px rgba(255,204,0,0.06)'
+                border: '1px solid rgba(201,169,110,0.35)',
+                boxShadow: '0 4px 24px rgba(0,0,0,0.35), 0 0 20px rgba(201,169,110,0.08)'
               }}
             >
-              <div className="w-2 h-2 rounded-full" style={{ background: '#ffcc00', animation: 'neonPulse 2s ease-in-out infinite' }} />
-              <h3 className="font-syne font-bold text-sm tracking-[0.2em] uppercase" style={{ color: '#e8edf2' }}>
+              <div className="w-2 h-2 rounded-full" style={{ background: '#c9a96e', animation: 'neonPulse 2s ease-in-out infinite' }} />
+              <h3 className="font-syne font-bold text-sm tracking-[0.2em] uppercase" style={{ color: '#f0e8dd' }}>
                 {data.label}
               </h3>
-              <div className="absolute inset-0 w-full h-[200%] -translate-y-full" style={{ background: 'linear-gradient(to bottom, transparent, rgba(255,204,0,0.04), transparent)', animation: 'scan 3s linear infinite' }} />
+              <div className="absolute inset-0 w-full h-[200%] -translate-y-full" style={{ background: 'linear-gradient(to bottom, transparent, rgba(201,169,110,0.04), transparent)', animation: 'scan 3s linear infinite' }} />
             </div>
           </div>
         </Html>
@@ -234,10 +242,10 @@ function BranchHotspot({ data, hoveredNode, setHoveredNode, isTreeInView, breakp
               width: isHovered ? 14 : 8,
               height: isHovered ? 14 : 8,
               borderRadius: '50%',
-              background: isHovered ? '#ffcc00' : 'rgba(255,204,0,0.5)',
-              border: '1.5px solid rgba(255,204,0,0.8)',
+              background: isHovered ? '#c9a96e' : 'rgba(201,169,110,0.5)',
+              border: '1.5px solid rgba(201,169,110,0.8)',
               transition: 'all 0.3s ease',
-              boxShadow: isHovered ? '0 0 10px rgba(255,204,0,0.8)' : 'none'
+              boxShadow: isHovered ? '0 0 10px rgba(201,169,110,0.8)' : 'none'
             }}
           />
         </Html>
@@ -269,9 +277,12 @@ function SceneContent({ hoveredNode, setHoveredNode, isTreeInView, breakpoint, s
   return (
     <>
       <ambientLight intensity={0.30} />
+      {/* Warm sakura-tinted directional light */}
       <directionalLight position={[5, 10, 5]} intensity={2.0} color="#ffe8f0" castShadow />
+      {/* Deep rose fill light */}
       <spotLight position={[-6, 4, 8]} angle={0.45} penumbra={1} intensity={5} color="#ff6b9d" />
-      <spotLight position={[8, -4, -4]} angle={0.40} penumbra={1} intensity={3} color="#660022" />
+      {/* Warm amber rim */}
+      <spotLight position={[8, -4, -4]} angle={0.40} penumbra={1} intensity={3} color="#7a3320" />
 
       <Float speed={1.2} rotationIntensity={0.15} floatIntensity={0.4}>
         <TreeModel hoveredNode={hoveredNode} isTreeInView={isTreeInView} breakpoint={breakpoint} swipeRotation={swipeRotation} />
@@ -287,7 +298,7 @@ function SceneContent({ hoveredNode, setHoveredNode, isTreeInView, breakpoint, s
         ))}
       </Float>
 
-      <ContactShadows resolution={256} frames={1} position={[0, -3.5, 0]} opacity={0.5} scale={15} blur={2.5} far={4} color="#000000" />
+      <ContactShadows resolution={256} frames={1} position={[0, -3.5, 0]} opacity={0.5} scale={15} blur={2.5} far={4} color="#1a0808" />
     </>
   )
 }
@@ -335,18 +346,18 @@ function DescriptionPanel({ hoveredNode }) {
       <div
         className="absolute inset-0 rounded-2xl"
         style={{
-          background: 'rgba(10, 10, 20, 0.6)',
+          background: 'rgba(10, 8, 12, 0.65)',
           backdropFilter: 'blur(28px) saturate(1.5)',
           WebkitBackdropFilter: 'blur(28px) saturate(1.5)',
-          boxShadow: '0 12px 48px rgba(0,0,0,0.5), 0 0 40px rgba(0,170,255,0.06), inset 0 1px 0 rgba(255,255,255,0.06)',
-          border: '1px solid rgba(255,255,255,0.08)',
-          borderLeft: '3px solid #00aaff'
+          boxShadow: '0 12px 48px rgba(0,0,0,0.5), 0 0 40px rgba(201,169,110,0.06), inset 0 1px 0 rgba(255,255,255,0.06)',
+          border: '1px solid rgba(201,169,110,0.12)',
+          borderLeft: '3px solid #c9a96e'
         }}
       />
 
-      <div className="absolute top-0 right-0 w-8 h-8 border-t border-r rounded-tr-2xl" style={{ borderColor: 'rgba(0,170,255,0.25)' }} />
-      <div className="absolute bottom-0 left-0 w-6 h-6 border-b border-l rounded-bl-2xl" style={{ borderColor: 'rgba(0,170,255,0.15)' }} />
-      <div className="absolute bottom-0 left-6 right-6 h-px" style={{ background: 'linear-gradient(to right, transparent, rgba(0,170,255,0.2), transparent)' }} />
+      <div className="absolute top-0 right-0 w-8 h-8 border-t border-r rounded-tr-2xl" style={{ borderColor: 'rgba(201,169,110,0.25)' }} />
+      <div className="absolute bottom-0 left-0 w-6 h-6 border-b border-l rounded-bl-2xl" style={{ borderColor: 'rgba(201,169,110,0.15)' }} />
+      <div className="absolute bottom-0 left-6 right-6 h-px" style={{ background: 'linear-gradient(to right, transparent, rgba(201,169,110,0.2), transparent)' }} />
 
       {[
         { top: '5%', size: 16, delay: '0s', dur: '4.2s' },
@@ -358,9 +369,9 @@ function DescriptionPanel({ hoveredNode }) {
       ].map((p, i) => (
         <div key={i} className="absolute -left-2.5 pointer-events-none" style={{ top: p.top }}>
           <svg width={p.size} height={p.size} viewBox="0 0 20 20" style={{ animation: `sakuraDrift ${p.dur} linear infinite ${p.delay}`, opacity: 1 }}>
-            <path d="M10 1C10 1 15 6 15 11C15 15 13 18 10 19C7 18 5 15 5 11C5 6 10 1 10 1Z" fill="rgba(0,170,255,0.4)" />
-            <path d="M10 1C10 1 15 6 15 11C15 15 13 18 10 19C7 18 5 15 5 11C5 6 10 1 10 1Z" fill="rgba(0,170,255,0.15)" transform={`rotate(${72 * (i % 5)} 10 10)`} />
-            <circle cx="10" cy="10" r="1.5" fill="rgba(0,170,255,0.3)" />
+            <path d="M10 1C10 1 15 6 15 11C15 15 13 18 10 19C7 18 5 15 5 11C5 6 10 1 10 1Z" fill="rgba(201,169,110,0.4)" />
+            <path d="M10 1C10 1 15 6 15 11C15 15 13 18 10 19C7 18 5 15 5 11C5 6 10 1 10 1Z" fill="rgba(232,180,184,0.2)" transform={`rotate(${72 * (i % 5)} 10 10)`} />
+            <circle cx="10" cy="10" r="1.5" fill="rgba(201,169,110,0.35)" />
           </svg>
         </div>
       ))}
@@ -369,15 +380,15 @@ function DescriptionPanel({ hoveredNode }) {
         <span
           ref={indexRef}
           className="block text-[10px] tracking-[0.3em] uppercase font-mono mb-2"
-          style={{ color: 'rgba(0,170,255,0.6)' }}
+          style={{ color: '#c9a96e' }}
         >
           {activeIndex >= 0 ? `${String(activeIndex + 1).padStart(2, '0')} / ${String(CATEGORIES.length).padStart(2, '0')}` : '—— / ——'}
         </span>
-        <h3 ref={titleRef} className="font-['Noto_Serif_JP'] font-bold text-xl sm:text-2xl uppercase tracking-[0.3em] sm:tracking-[0.4em] mb-4 leading-tight" style={{ color: '#00aaff' }}>
+        <h3 ref={titleRef} className="font-['Noto_Serif_JP'] font-bold text-xl sm:text-2xl uppercase tracking-[0.3em] sm:tracking-[0.4em] mb-4 leading-tight" style={{ color: '#c9a96e' }}>
           {activeObj?.label || 'AWAITING LINK...'}
         </h3>
-        <div className="w-10 h-px mb-4" style={{ background: 'linear-gradient(to right, #00aaff, transparent)' }} />
-        <p ref={descRef} className="font-['Noto_Serif_JP'] text-sm md:text-[0.85rem] leading-[2.1] tracking-[0.12em]" style={{ color: 'rgba(232,237,242,0.85)' }}>
+        <div className="w-10 h-px mb-4" style={{ background: 'linear-gradient(to right, #c9a96e, transparent)' }} />
+        <p ref={descRef} className="font-['Noto_Serif_JP'] text-sm md:text-[0.85rem] leading-[2.1] tracking-[0.12em]" style={{ color: 'rgba(240,232,221,0.85)' }}>
           {activeObj?.desc || 'Data stream interrupted.'}
         </p>
       </div>
@@ -385,25 +396,33 @@ function DescriptionPanel({ hoveredNode }) {
   )
 }
 
+// ─── Redesigned Mobile Panel — matches image 2 aesthetic ────────────────────
 function MobileBottomPanel({ hoveredNode, setHoveredNode, activeIndex, setActiveIndex, onSwipe }) {
   const panelRef = useRef(null)
-  const touchStartX = useRef(null)
   const activeObj = CATEGORIES[activeIndex]
+  const touchStartX = useRef(null)
 
   useEffect(() => {
     setHoveredNode(activeObj.id)
   }, [activeIndex])
 
+  // Slide-up entrance
   useEffect(() => {
     if (panelRef.current) {
-      gsap.fromTo(panelRef.current, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, delay: 0.8, ease: 'power3.out' })
+      gsap.fromTo(panelRef.current,
+        { y: 80, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, delay: 0.9, ease: 'power3.out' }
+      )
     }
   }, [])
 
   const textRef = useRef(null)
   useEffect(() => {
     if (textRef.current) {
-      gsap.fromTo(textRef.current, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' })
+      gsap.fromTo(textRef.current,
+        { opacity: 0, y: 14 },
+        { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }
+      )
     }
   }, [activeIndex])
 
@@ -434,84 +453,84 @@ function MobileBottomPanel({ hoveredNode, setHoveredNode, activeIndex, setActive
   return (
     <div
       ref={panelRef}
-      className="absolute bottom-0 left-0 right-0 z-20 flex flex-col items-center pb-10 pt-4 px-4 sm:px-5"
-      style={{ background: 'linear-gradient(to top, rgba(5,5,10,0.97) 60%, rgba(5,5,10,0.7) 85%, transparent)' }}
+      className="absolute bottom-50 left-0 right-0 z-20 flex flex-col items-center"
+      style={{
+        paddingBottom: 'env(safe-area-inset-bottom, 24px)',
+        paddingLeft: '5%',
+        paddingRight: '5%',
+      }}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      <div className="flex items-center gap-2.5 mb-4">
-        {CATEGORIES.map((cat, i) => (
-          <button
-            key={cat.id}
-            aria-label={`Show ${cat.label}`}
-            onClick={() => { setActiveIndex(i); onSwipe(i) }}
-            style={{
-              width: i === activeIndex ? 26 : 8,
-              height: 8,
-              borderRadius: 4,
-              background: i === activeIndex ? '#00aaff' : 'rgba(0,170,255,0.25)',
-              border: 'none',
-              padding: 0,
-              cursor: 'pointer',
-              transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
-              boxShadow: i === activeIndex ? '0 0 12px rgba(0,170,255,0.4)' : 'none'
-            }}
-          />
-        ))}
-      </div>
-
+      {/* ── Info card ── */}
       <div
-        className="w-[88%] max-w-[400px] relative rounded-2xl overflow-hidden"
+        className="w-full max-w-[480px] relative rounded-2xl overflow-hidden mb-10"
         style={{
-          background: 'rgba(10, 10, 20, 0.6)',
-          backdropFilter: 'blur(28px) saturate(1.5)',
-          WebkitBackdropFilter: 'blur(28px) saturate(1.5)',
-          border: '1px solid rgba(0,170,255,0.15)',
-          borderLeft: '3px solid #00aaff',
-          boxShadow: '0 -4px 32px rgba(0,0,0,0.3), 0 0 30px rgba(0,170,255,0.05), inset 0 1px 0 rgba(255,255,255,0.05)'
+          background: 'rgba(8, 5, 8, 0.72)',
+          backdropFilter: 'blur(32px) saturate(1.6)',
+          WebkitBackdropFilter: 'blur(32px) saturate(1.6)',
+          border: '1px solid rgba(201,169,110,0.22)',
+          borderLeft: '3px solid #c9a96e',
+          boxShadow: '0 -4px 40px rgba(0,0,0,0.4), 0 0 30px rgba(201,169,110,0.07), inset 0 1px 0 rgba(255,255,255,0.04)'
         }}
       >
-        <div className="absolute top-0 right-0 w-5 h-5 border-t border-r" style={{ borderColor: 'rgba(0,170,255,0.3)', borderTopRightRadius: 12 }} />
-        <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l" style={{ borderColor: 'rgba(0,170,255,0.2)' }} />
+        {/* Corner accents */}
+        <div className="absolute top-0 right-0 w-5 h-5 border-t border-r" style={{ borderColor: 'rgba(201,169,110,0.3)', borderTopRightRadius: 14 }} />
+        <div className="absolute bottom-0 left-0 w-4 h-4 border-b border-l" style={{ borderColor: 'rgba(201,169,110,0.2)' }} />
 
-        <div ref={textRef} className="relative z-10 px-5 py-5">
+        {/* Scan line overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'linear-gradient(to bottom, transparent 40%, rgba(201,169,110,0.025) 50%, transparent 60%)',
+            animation: 'scan 3s linear infinite'
+          }}
+        />
+
+        <div ref={textRef} className="relative z-10 px-6 py-6">
+          {/* Index */}
           <span
-            className="text-[10px] tracking-[0.3em] uppercase font-mono mb-2 block"
-            style={{ color: 'rgba(0,170,255,0.6)' }}
+            className="text-[10px] tracking-[0.35em] uppercase font-mono mb-2 block"
+            style={{ color: '#c9a96e' }}
           >
             {String(activeIndex + 1).padStart(2, '0')} / {String(CATEGORIES.length).padStart(2, '0')}
           </span>
 
+          {/* Title */}
           <h3
-            className="font-['Noto_Serif_JP'] font-bold text-lg uppercase tracking-[0.2em] mb-3 leading-tight"
-            style={{ color: '#e8edf2' }}
+            className="font-['Noto_Serif_JP'] font-bold text-xl uppercase tracking-[0.22em] mb-3 leading-tight"
+            style={{ color: '#f5ede0' }}
           >
             {activeObj.label}
           </h3>
 
-          <div className="w-8 h-px mb-3" style={{ background: 'linear-gradient(to right, #00aaff, transparent)' }} />
+          {/* Divider */}
+          <div className="w-9 h-px mb-4" style={{ background: 'linear-gradient(to right, #c9a96e, transparent)' }} />
 
+          {/* Description */}
           <p
-            className="font-['Noto_Serif_JP'] text-[0.78rem] leading-[1.85] tracking-[0.08em]"
-            style={{ color: 'rgba(232,237,242,0.8)' }}
+            className="font-['Noto_Serif_JP'] text-[0.80rem] leading-[1.9] tracking-[0.07em]"
+            style={{ color: 'rgba(240,232,221,0.82)' }}
           >
             {activeObj.desc}
           </p>
         </div>
-
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: 'linear-gradient(to bottom, transparent 40%, rgba(0,170,255,0.02) 50%, transparent 60%)',
-            animation: 'scan 3s linear infinite'
-          }}
-        />
       </div>
 
-      <p className="mt-3 text-[10px] tracking-[0.2em] uppercase opacity-30 flex items-center gap-3" style={{ color: '#e8edf2' }}>
-        <span style={{ display: 'inline-block', width: 16, height: 1, background: 'rgba(0,170,255,0.4)' }} />
+      {/* ── Swipe indicator ── */}
+      <p
+        className="flex items-center gap-3 mb-6"
+        style={{
+          fontSize: '0.6rem',
+          letterSpacing: '0.25em',
+          textTransform: 'uppercase',
+          color: 'rgba(201,169,110,0.55)',
+          fontFamily: 'monospace'
+        }}
+      >
+        <span style={{ display: 'inline-block', width: 28, height: 1, background: 'linear-gradient(to right, transparent, rgba(201,169,110,0.5))' }} />
         swipe to explore
-        <span style={{ display: 'inline-block', width: 16, height: 1, background: 'rgba(0,170,255,0.4)' }} />
+        <span style={{ display: 'inline-block', width: 28, height: 1, background: 'linear-gradient(to left, transparent, rgba(201,169,110,0.5))' }} />
       </p>
     </div>
   )
@@ -565,12 +584,18 @@ const TreeSection = () => {
   }, [])
 
   const isSmallMobile = window.innerWidth <= 430
-  const canvasHeight = isMobile ? (isSmallMobile ? '72%' : '55%') : '100%'
+
+  // ── Give the tree more vertical room so the card floats naturally ──
+  // Mobile: 58% canvas keeps the tree centred in the upper portion
+  const canvasHeight = isMobile
+    ? (isSmallMobile ? '60%' : '58%')
+    : '100%'
 
   return (
     <section ref={sectionRef} className="relative w-full h-screen bg-transparent z-30 overflow-hidden">
       <div ref={contentRef} className="absolute inset-0 w-full h-full">
 
+        {/* ── 3-D Canvas ── */}
         <div
           className="absolute left-0 right-0 top-0 z-1"
           style={{ height: canvasHeight }}
@@ -602,23 +627,27 @@ const TreeSection = () => {
           </Canvas>
         </div>
 
+        {/* ── Desktop heading ── */}
         <div className="hidden md:block absolute top-12 left-10 md:left-16 lg:left-24 z-10 pointer-events-auto">
           <div style={{ filter: 'none' }}>
             <GlitchText text="CORE DISCIPLINES" className="text-3xl md:text-4xl lg:text-5xl leading-none" />
           </div>
-          <div className="w-16 h-1 mt-6 pointer-events-none" style={{ background: 'linear-gradient(to right, #00aaff, transparent)' }} />
-          <p className="mt-6 text-xs md:text-sm font-inter tracking-[0.2em] uppercase max-w-xs pointer-events-none" style={{ color: 'rgba(232,237,242,0.5)' }}>
+          <div className="w-16 h-1 mt-6 pointer-events-none" style={{ background: 'linear-gradient(to right, #c9a96e, transparent)' }} />
+          <p className="mt-6 text-xs md:text-sm font-inter tracking-[0.2em] uppercase max-w-xs pointer-events-none" style={{ color: 'rgba(240,232,221,0.5)' }}>
             Explore the interconnected<br />roots of my expertise.
           </p>
         </div>
 
+        {/* ── Mobile heading ── */}
         <div className="md:hidden absolute top-8 left-0 right-0 z-10 flex flex-col items-center pointer-events-none">
           <GlitchText text="CORE DISCIPLINES" className="text-2xl leading-none text-center" />
-          <div className="w-12 h-0.5 mt-3" style={{ background: 'linear-gradient(to right, transparent, #00aaff, transparent)' }} />
+          <div className="w-12 h-0.5 mt-3" style={{ background: 'linear-gradient(to right, transparent, #c9a96e, transparent)' }} />
         </div>
 
+        {/* ── Desktop description panel ── */}
         {!isMobile && <DescriptionPanel hoveredNode={hoveredNode} />}
 
+        {/* ── Mobile bottom panel (redesigned) ── */}
         {isMobile && (
           <MobileBottomPanel
             hoveredNode={hoveredNode}
@@ -629,9 +658,10 @@ const TreeSection = () => {
           />
         )}
 
+        {/* ── Desktop hint ── */}
         <div className="hidden md:flex absolute bottom-12 right-10 md:right-16 lg:right-24 z-10 pointer-events-none items-center gap-4 opacity-40">
-          <div className="w-12 h-px" style={{ background: 'rgba(0,170,255,0.5)' }} />
-          <span className="text-[10px] uppercase tracking-widest font-mono" style={{ color: 'rgba(232,237,242,0.5)' }}>Hover branches to scan</span>
+          <div className="w-12 h-px" style={{ background: 'rgba(201,169,110,0.55)' }} />
+          <span className="text-[10px] uppercase tracking-widest font-mono" style={{ color: 'rgba(240,232,221,0.5)' }}>Hover branches to scan</span>
         </div>
       </div>
     </section>
